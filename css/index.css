@@ -6,6 +6,10 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/background1584-1k9a-900h.png');
+  background-size: cover;
+  background-position: center;
 }
  
 .home-thq-home-elm {
@@ -17,7 +21,6 @@
   position: relative;
   align-items: flex-start;
   flex-shrink: 0;
-  background-color: rgba(241, 232, 255, 1);
   margin: 0 auto;
 }
  

@@ -1,0 +1,169 @@
+.rules-container1 {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/background1584-1k9a-900h.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.rules-content-box {
+  width: 90%;
+  max-width: 1020px;
+  position: relative;
+  padding: 60px 80px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.rules-back-button {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.rules-back-button:hover {
+  transform: translateX(-5px);
+}
+
+.rules-back-icon {
+  width: 50px;
+  height: 50px;
+  fill: rgba(43, 61, 141, 1);
+}
+
+.rules-logo {
+  width: 320px;
+  height: auto;
+  margin-top: 10px;
+}
+
+.rules-title {
+  color: rgba(43, 61, 141, 1);
+  font-size: 48px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  margin: 10px 0 20px 0;
+}
+
+.rules-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 900px;
+}
+
+.rules-paragraph {
+  color: rgba(43, 61, 141, 1);
+  font-size: 20px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.rules-paragraph strong {
+  font-weight: 700;
+}
+
+.rules-play-button {
+  gap: 8px;
+  width: 180px;
+  height: 70px;
+  display: flex;
+  padding: 12px;
+  overflow: hidden;
+  margin-top: 20px;
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.4);
+  align-items: center;
+  border-radius: 8px;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rules-play-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 2px 6px 8px 0px rgba(0, 0, 0, 0.5);
+}
+
+.rules-play-text {
+  color: rgba(255, 255, 255, 1);
+  font-size: 30px;
+  font-family: 'Protest Strike';
+  font-weight: 400;
+  text-align: center;
+}
+
+@media (max-width: 991px) {
+  .rules-content-box {
+    padding: 50px 60px;
+  }
+  
+  .rules-title {
+    font-size: 40px;
+  }
+  
+  .rules-paragraph {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  .rules-content-box {
+    padding: 40px 30px;
+    width: 95%;
+  }
+  
+  .rules-back-button {
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .rules-back-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .rules-logo {
+    width: 250px;
+  }
+  
+  .rules-title {
+    font-size: 32px;
+  }
+  
+  .rules-paragraph {
+    font-size: 16px;
+  }
+  
+  .rules-play-button {
+    width: 160px;
+    height: 60px;
+  }
+  
+  .rules-play-text {
+    font-size: 26px;
+  }
+}
