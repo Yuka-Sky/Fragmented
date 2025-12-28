@@ -1,0 +1,201 @@
+.home-container1 {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+}
+ 
+.home-thq-home-elm {
+  width: 100%;
+  height: 832px;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  align-items: flex-start;
+  flex-shrink: 0;
+  background-color: rgba(241, 232, 255, 1);
+}
+ 
+.home-thq-background-elm {
+  top: -9px;
+  left: -10px;
+  width: 1300px;
+  height: 850px;
+  position: absolute;
+}
+ 
+.home-thq-whitebkg-elm {
+  top: 129px;
+  left: 98px;
+  width: 1085px;
+  height: 574px;
+  opacity: 0.80;
+  position: absolute;
+  border-radius: 12px;
+}
+ 
+.home-thq-buttons-elm {
+  top: 551px;
+  left: 274px;
+  width: 731px;
+  height: 70px;
+  display: flex;
+  position: absolute;
+  align-items: flex-start;
+  flex-shrink: 1;
+}
+ 
+.home-thq-about-elm {
+  gap: 8px;
+  top: 0px;
+  left: 0px;
+  width: 189px;
+  height: 70px;
+  display: flex;
+  padding: 12px;
+  overflow: hidden;
+  position: absolute;
+  background: linear-gradient(180deg, rgba(188, 186, 242, 1) 0%, rgba(143, 140, 224, 1) 100%);
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.4000000059604645) ;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  justify-content: center;
+}
+ 
+.home-thq-text-elm1 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  font-size: 30px;
+  font-style: Regular;
+  text-align: left;
+  font-family: Protest Strike;
+  font-weight: 400;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.home-thq-rules-elm {
+  gap: 8px;
+  top: 0px;
+  left: 542px;
+  width: 189px;
+  height: 70px;
+  display: flex;
+  padding: 12px;
+  overflow: hidden;
+  position: absolute;
+  background: linear-gradient(180deg, rgba(189, 187, 243, 1) 0%, rgba(143, 140, 224, 1) 100%);
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.4000000059604645) ;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  justify-content: center;
+}
+ 
+.home-thq-text-elm2 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  font-size: 30px;
+  font-style: Regular;
+  text-align: left;
+  font-family: Protest Strike;
+  font-weight: 400;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.home-thq-play-elm {
+  gap: 8px;
+  top: 0px;
+  left: 271px;
+  width: 189px;
+  height: 70px;
+  display: flex;
+  padding: 12px;
+  overflow: hidden;
+  position: absolute;
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.4000000059604645) ;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  justify-content: center;
+}
+ 
+.home-thq-text-elm3 {
+  color: rgba(255, 255, 255, 1);
+  height: auto;
+  font-size: 30px;
+  font-style: Regular;
+  text-align: left;
+  font-family: Protest Strike;
+  font-weight: 400;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.home-thq-text-elm4 {
+  top: 416px;
+  left: 248px;
+  color: rgba(43, 61, 141, 1);
+  height: auto;
+  position: absolute;
+  font-size: 32px;
+  font-style: Regular;
+  text-align: center;
+  font-family: Protest Strike;
+  font-weight: 400;
+  line-height: normal;
+  font-stretch: normal;
+  text-decoration: none;
+}
+ 
+.home-thq-logo-elm {
+  top: 210px;
+  left: 436px;
+  width: 408px;
+  height: 126px;
+  position: absolute;
+}
+ 
+.home-link {
+  display: contents;
+}
+ 
+.home-container2 {
+  right: 50px;
+  border: 1px solid #ffffff5c;
+  bottom: 30px;
+  display: flex;
+  z-index: 22;
+  position: fixed;
+  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
+  min-height: auto;
+  align-items: center;
+  padding-top: 8px;
+  padding-left: 12px;
+  border-radius: 8px;
+  padding-right: 12px;
+  padding-bottom: 8px;
+  backdrop-filter: blur(6px);
+  background-color: rgba(41, 41, 41, 0.41);
+}
+ 
+.home-icon1 {
+  width: 24px;
+  margin-right: 4px;
+}
+ 
+.home-text {
+  color: white;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
