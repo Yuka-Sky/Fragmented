@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>About - Fragmented Narratives</title>
-    <meta property="og:title" content="About - Fragmented Narratives" />
+    <title>Old Narratives - Fragmented Narratives</title>
+    <meta property="og:title" content="Old Narratives - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,58 +51,30 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/about.css" rel="stylesheet" />
+      <link href="./css/history.css" rel="stylesheet" />
 
-      <div class="about-container1">
-        <div class="about-content-box">
-          <a href="#" onclick="goBack(); return false;" class="about-back-button">
-            <svg viewBox="0 0 1024 1024" class="about-back-icon">
-              <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
-            </svg>
-          </a>
-          
-          <img
-            src="public/logo9015-q7l4-200h.png"
-            alt="Fragmented Narratives Logo"
-            class="about-logo"
-          />
-          
-          <h1 class="about-title">About: Know Us</h1>
-          
-          <div class="about-text-content">
-            <p class="about-paragraph">
-              <strong>Fragmented Narratives is a collaborative storytelling experience built one sentence at a time.</strong><br/>
-              Contextually, this project was developed for the course of Multimedia Laboratory from the Master's in Multimedia, in FEUP.
-            </p>
-            
-            <h2 class="about-subtitle">Creators:</h2>
-            
-            <div class="about-creators-grid">
-              <div class="about-creators-column">
-                <p class="about-creator-name">Bárbara Sequeira (up202209082)</p>
-                <p class="about-creator-name">Francisco Mourão (up202511216)</p>
-                <p class="about-creator-name">Tiago Teixeira (up202208511)</p>
-              </div>
-              <div class="about-creators-column">
-                <p class="about-creator-name">Bruna Jardim (up202006619)</p>
-                <p class="about-creator-name">Matilde Tavares (up202502586)</p>
-                <p class="about-creator-name">Yuka Sakai (up202300600)</p>
-              </div>
-            </div>
+      <div class="history-container">
+        <h1 class="history-main-title">Old Narratives</h1>
+
+        <div class="history-content-box">
+          <div class="history-grid" id="historyGrid">
+            <!-- Story cards will be added here dynamically -->
+            <a href="story1.html" class="history-card">
+              <h3 class="history-card-title">Faster Than Facts</h3>
+            </a>
+            <a href="story2.html" class="history-card">
+              <h3 class="history-card-title">Nothing Changed</h3>
+            </a>
+            <a href="story3.html" class="history-card">
+              <h3 class="history-card-title">A Slightly Different Time</h3>
+            </a>
           </div>
         </div>
+
+        <a href="menu.html" class="history-back-button">
+          <span class="history-back-text">Back</span>
+        </a>
       </div>
     </div>
-    
-    <script>
-      function goBack() {
-        const referrer = document.referrer;
-        if (referrer.includes('menu.html')) {
-          window.location.href = 'menu.html';
-        } else {
-          window.location.href = 'index.html';
-        }
-      }
-    </script>
   </body>
 </html>

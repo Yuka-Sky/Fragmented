@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>About - Fragmented Narratives</title>
-    <meta property="og:title" content="About - Fragmented Narratives" />
+    <title>A Slightly Different Time - Fragmented Narratives</title>
+    <meta property="og:title" content="A Slightly Different Time - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,58 +51,61 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/about.css" rel="stylesheet" />
+      <link href="./css/story-view.css" rel="stylesheet" />
 
-      <div class="about-container1">
-        <div class="about-content-box">
-          <a href="#" onclick="goBack(); return false;" class="about-back-button">
-            <svg viewBox="0 0 1024 1024" class="about-back-icon">
+      <div class="story-view-container">
+        <div class="story-view-content-box">
+          <a href="history.html" class="story-view-back-button">
+            <svg viewBox="0 0 1024 1024" class="story-view-back-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
             </svg>
           </a>
-          
-          <img
-            src="public/logo9015-q7l4-200h.png"
-            alt="Fragmented Narratives Logo"
-            class="about-logo"
-          />
-          
-          <h1 class="about-title">About: Know Us</h1>
-          
-          <div class="about-text-content">
-            <p class="about-paragraph">
-              <strong>Fragmented Narratives is a collaborative storytelling experience built one sentence at a time.</strong><br/>
-              Contextually, this project was developed for the course of Multimedia Laboratory from the Master's in Multimedia, in FEUP.
+          <h1 class="story-view-title">A Slightly Different Time</h1>
+
+          <div class="story-view-text">
+            <p class="story-sentence">
+              During lunch, someone replaced the office clock with a slightly different one. 
+              <span class="story-author">by BobbyTheWriter</span>
             </p>
-            
-            <h2 class="about-subtitle">Creators:</h2>
-            
-            <div class="about-creators-grid">
-              <div class="about-creators-column">
-                <p class="about-creator-name">Bárbara Sequeira (up202209082)</p>
-                <p class="about-creator-name">Francisco Mourão (up202511216)</p>
-                <p class="about-creator-name">Tiago Teixeira (up202208511)</p>
-              </div>
-              <div class="about-creators-column">
-                <p class="about-creator-name">Bruna Jardim (up202006619)</p>
-                <p class="about-creator-name">Matilde Tavares (up202502586)</p>
-                <p class="about-creator-name">Yuka Sakai (up202300600)</p>
-              </div>
-            </div>
+            <p class="story-sentence">
+              At first, everyone assumed it was a harmless prank and laughed it off. 
+              <span class="story-author">by BobbyTheWriter</span>
+            </p>
+            <p class="story-sentence">
+              Pranks usually work best when nobody takes them too seriously. 
+              <span class="story-author">by StaticMuse</span>
+            </p>
+            <p class="story-sentence">
+              Taking things seriously felt unnecessary in this case. 
+              <span class="story-author">by LazyFoxxo</span>
+            </p>
+            <p class="story-sentence">
+              The unnecessary concern slowly turned into mild curiosity. 
+              <span class="story-author">by duckybeans</span>
+            </p>
+            <p class="story-sentence">
+              Curiosity led people to compare notes and exaggerate tiny differences. 
+              <span class="story-author">by You</span>
+            </p>
+            <p class="story-sentence">
+              The differences became much bigger through retelling than they ever were in reality. 
+              <span class="story-author">by piggyteddy_</span>
+            </p>
+            <p class="story-sentence">
+              Soon, the story sounded far more impressive than the actual event. 
+              <span class="story-author">by BobbyTheWriter</span>
+            </p>
+            <p class="story-sentence">
+              The event started to feel like an inside joke. 
+              <span class="story-author">by NotSoProGamer</span>
+            </p>
+            <p class="story-sentence">
+              By the end of the day, no one could remember what the joke was originally about. 
+              <span class="story-author">by raccooncrumbs</span>
+            </p>
           </div>
         </div>
       </div>
     </div>
-    
-    <script>
-      function goBack() {
-        const referrer = document.referrer;
-        if (referrer.includes('menu.html')) {
-          window.location.href = 'menu.html';
-        } else {
-          window.location.href = 'index.html';
-        }
-      }
-    </script>
   </body>
 </html>

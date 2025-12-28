@@ -1,0 +1,153 @@
+.story-view-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/GeneralBackground.png');
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+  gap: 25px;
+}
+
+.story-view-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.story-view-logo {
+  width: 380px;
+  height: auto;
+}
+
+.story-view-content-box {
+  width: 90%;
+  max-width: 920px;
+  padding: 60px 80px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.story-view-back-button {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.story-view-back-button:hover {
+  transform: translateX(-5px);
+}
+
+.story-view-back-icon {
+  width: 50px;
+  height: 50px;
+  fill: rgba(43, 61, 141, 1);
+}
+
+.story-view-title {
+  color: rgba(255, 127, 0, 1);
+  font-size: 42px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 700;
+  text-align: left;
+  margin: 0 0 30px 0;
+}
+
+.story-view-text {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.story-sentence {
+  color: rgba(43, 61, 141, 1);
+  font-size: 22px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.story-author {
+  color: rgba(170, 170, 220, 1);
+  font-size: 22px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+@media (max-width: 991px) {
+  .story-view-logo {
+    width: 320px;
+  }
+
+  .story-view-content-box {
+    padding: 50px 60px;
+  }
+
+  .story-view-title {
+    font-size: 36px;
+  }
+
+  .story-sentence {
+    font-size: 20px;
+  }
+
+  .story-author {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .story-view-logo {
+    width: 280px;
+  }
+
+  .story-view-content-box {
+    padding: 50px 30px 40px 30px;
+    width: 95%;
+  }
+
+  .story-view-back-button {
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .story-view-back-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .story-view-title {
+    font-size: 30px;
+    margin-bottom: 25px;
+  }
+
+  .story-view-text {
+    gap: 16px;
+  }
+
+  .story-sentence {
+    font-size: 18px;
+  }
+
+  .story-author {
+    font-size: 18px;
+  }
+}

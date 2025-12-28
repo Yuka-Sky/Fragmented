@@ -1,0 +1,170 @@
+.menu-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/GeneralBackground.png');
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+  gap: 30px;
+}
+
+.menu-header {
+  display: none;
+}
+
+.menu-content-box {
+  width: 90%;
+  max-width: 920px;
+  padding: 60px 80px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.menu-title {
+  color: rgba(43, 61, 141, 1);
+  font-size: 52px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.menu-main-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+}
+
+.menu-secondary-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 32px;
+  min-width: 220px;
+  height: 70px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.menu-button-primary {
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.menu-button-secondary {
+  background: linear-gradient(180deg, rgba(189, 187, 243, 1) 0%, rgba(143, 140, 224, 1) 100%);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.25);
+  min-width: 180px;
+  height: 65px;
+}
+
+.menu-button-secondary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 14px rgba(0, 0, 0, 0.35);
+}
+
+.menu-button:active {
+  transform: translateY(0px);
+}
+
+.menu-button-text {
+  color: rgba(255, 255, 255, 1);
+  font-size: 28px;
+  font-family: 'Protest Strike';
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 991px) {
+  .menu-logo {
+    width: 320px;
+  }
+
+  .menu-content-box {
+    padding: 50px 60px;
+  }
+  
+  .menu-title {
+    font-size: 44px;
+  }
+
+  .menu-button {
+    min-width: 200px;
+    height: 65px;
+  }
+
+  .menu-button-text {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu-logo {
+    width: 280px;
+  }
+
+  .menu-content-box {
+    padding: 40px 30px;
+    width: 95%;
+    gap: 40px;
+  }
+  
+  .menu-title {
+    font-size: 36px;
+  }
+
+  .menu-main-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .menu-secondary-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    margin-top: 5px;
+  }
+
+  .menu-button {
+    width: 100%;
+    min-width: auto;
+    height: 60px;
+  }
+
+  .menu-button-secondary {
+    height: 55px;
+  }
+
+  .menu-button-text {
+    font-size: 24px;
+  }
+}
