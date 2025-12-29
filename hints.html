@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Write Your Sentence - Fragmented Narratives</title>
-    <meta property="og:title" content="Write Your Sentence - Fragmented Narratives" />
+    <title>Hints from Previous Writer - Fragmented Narratives</title>
+    <meta property="og:title" content="Hints from Previous Writer - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,82 +51,37 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/write-sentence.css" rel="stylesheet" />
+      <link href="./css/hints.css" rel="stylesheet" />
 
-      <div class="write-container">
-
-        <div class="write-content-box">
-          <a href="opening-sentence.html" class="write-back-arrow">
-            <svg viewBox="0 0 1024 1024" class="write-icon">
+      <div class="hints-container">
+        <div class="hints-content-box">
+          <a href="upload-picture.html" class="hints-back-arrow">
+            <svg viewBox="0 0 1024 1024" class="hints-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
             </svg>
           </a>
 
-          <h1 class="write-title">Write Your Sentence</h1>
+          <h1 class="hints-title">Hints from the Previous Writer:</h1>
 
-          <textarea id="sentenceInput" class="write-textarea" placeholder=""></textarea>
-
-          <div class="write-buttons">
-            <a href="#" class="write-button" id="sendButton">
-              <span class="write-button-text">Send</span>
-            </a>
-            <a href="#" class="write-button" id="finishButton">
-              <span class="write-button-text">Finish Narrative</span>
-            </a>
+          <div class="hints-words" id="hintsContent">
+            "arm" "hurt" "reason"
           </div>
+
+          <a href="write-sentence.html?mode=continue" class="hints-button">
+            <span class="hints-button-text">Continue Narrative</span>
+          </a>
         </div>
       </div>
     </div>
 
     <script>
-      // Check which mode we're in (new story or continue story)
+      // Get hints from URL parameters or use default
       const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode');
-      const finishButton = document.getElementById('finishButton');
-
-      // If mode is 'new' (start a story path), hide finish narrative button
-      if (mode === 'new') {
-        finishButton.style.display = 'none';
-      } 
-      // If mode is 'continue' (continue story path), show but disable finish narrative button
-      else if (mode === 'continue') {
-        finishButton.style.display = 'flex';
-        finishButton.style.opacity = '0.5';
-        finishButton.style.cursor = 'not-allowed';
-        finishButton.classList.add('disabled');
+      const hints = urlParams.get('hints');
+      
+      if (hints) {
+        document.getElementById('hintsContent').textContent = hints;
       }
-
-      document.getElementById('sendButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        const sentenceInput = document.getElementById('sentenceInput').value.trim();
-        
-        if (sentenceInput) {
-          console.log('Sending sentence:', sentenceInput);
-          // Redirect to pick next writer page
-          window.location.href = 'pick-writer.html';
-        } else {
-          alert('Please write a sentence before sending');
-        }
-      });
-
-      document.getElementById('finishButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Don't allow clicking if disabled
-        if (this.classList.contains('disabled')) {
-          return;
-        }
-        
-        const sentenceInput = document.getElementById('sentenceInput').value.trim();
-        
-        if (sentenceInput) {
-          console.log('Finishing narrative with sentence:', sentenceInput);
-          // Redirect to the give title page
-          window.location.href = 'give-title.html';
-        } else {
-          alert('Please write a sentence before finishing the narrative');
-        }
-      });
     </script>
   </body>
 </html>
