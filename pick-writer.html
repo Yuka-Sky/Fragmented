@@ -104,7 +104,7 @@
           }
 
           const data = await response.json();
-          allWriters = data.users;
+          allWriters = data.users.filter(user => user.id !== auth.userId);
           displayWriters(allWriters);
         } catch (error) {
           console.error('Error loading users:', error);

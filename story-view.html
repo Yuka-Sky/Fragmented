@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Upload the Picture - Fragmented Narratives</title>
-    <meta property="og:title" content="Upload the Picture - Fragmented Narratives" />
+    <title>Story - Fragmented Narratives</title>
+    <meta property="og:title" content="Story - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,36 +51,22 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/upload-picture.css" rel="stylesheet" />
+      <link href="./css/story-view.css" rel="stylesheet" />
 
-      <div class="upload-container">
-        <div class="upload-content-box">
+      <div class="story-view-container">
+        <div class="story-view-content-box">
           <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
-          <a href="available-stories.html" class="upload-back-arrow">
-            <svg viewBox="0 0 1024 1024" class="upload-icon">
+          <a href="history.html" class="story-view-back-button">
+            <svg viewBox="0 0 1024 1024" class="story-view-back-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
             </svg>
           </a>
 
-          <h1 class="upload-title">Upload the Picture!</h1>
+          <h1 class="story-view-title" id="storyTitle">Loading...</h1>
 
-          <div class="upload-info" id="storyInfo">
-            <p class="upload-info-text"><strong>Invite from:</strong> <span id="inviteFrom">Loading...</span></p>
-            <p class="upload-info-text"><strong>Object:</strong> <span id="storyObject">Loading...</span></p>
+          <div class="story-view-text" id="storyContent" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+            <p style="text-align: center; color: rgba(43, 61, 141, 0.7);">Loading story...</p>
           </div>
-
-          <label for="fileInput" class="upload-button-label">
-            <input type="file" id="fileInput" class="upload-file-input" accept=".png,.jpg,.jpeg" />
-            <div class="upload-icon-box">
-              <svg viewBox="0 0 1024 1024" class="upload-arrow-icon">
-                <path d="M298 426v256h428v-256h170l-384-384-384 384h170zM896 810v86h-768v-86h768z"></path>
-              </svg>
-            </div>
-          </label>
-
-          <a href="#" class="upload-done-button" id="doneButton">
-            <span class="upload-button-text">Done</span>
-          </a>
         </div>
       </div>
     </div>
@@ -97,20 +83,17 @@
       }
 
       async function initPage() {
-        // Display current username
-        document.getElementById('currentUser').textContent = `@${auth.username}`;
-        
         const urlParams = new URLSearchParams(window.location.search);
         const storyId = urlParams.get('storyId');
 
         if (!storyId) {
           alert('No story selected');
-          window.location.href = 'available-stories.html';
+          window.location.href = 'history.html';
           return;
         }
 
-        // Load story data
         try {
+          // Load story with contributions
           const response = await fetch(`http://localhost:3000/api/stories/${storyId}`, {
             headers: {
               'Authorization': `Bearer ${auth.token}`
@@ -123,42 +106,34 @@
 
           const data = await response.json();
           
-          // Get last contributor (the one who invited current user)
-          const lastContributor = data.contributions.length > 0 
-            ? data.contributions[data.contributions.length - 1].username
-            : data.story.creator_username;
+          // Set title
+          document.getElementById('storyTitle').textContent = data.story.title || 'Untitled Story';
           
-          // Update UI with story data
-          document.getElementById('inviteFrom').textContent = lastContributor;
-          document.getElementById('storyObject').textContent = data.story.object;
+          // Display all contributions with authors
+          const storyContent = document.getElementById('storyContent');
+          storyContent.innerHTML = '';
+
+          data.contributions.forEach((contribution, index) => {
+            const p = document.createElement('p');
+            p.className = 'story-sentence';
+            p.textContent = contribution.sentence_text + ' ';
+            
+            // Add author name for all except the opening sentence
+            if (index > 0) {
+              const authorSpan = document.createElement('span');
+              authorSpan.className = 'story-author';
+              authorSpan.textContent = `by ${contribution.username}`;
+              p.appendChild(authorSpan);
+            }
+            
+            storyContent.appendChild(p);
+          });
 
         } catch (error) {
           console.error('Error loading story:', error);
-          alert('Error loading story data');
+          document.getElementById('storyTitle').textContent = 'Error';
+          document.getElementById('storyContent').innerHTML = '<p style="text-align: center; color: red;">Error loading story</p>';
         }
-
-        const fileInput = document.getElementById('fileInput');
-        let uploadedFile = null;
-
-        fileInput.addEventListener('change', function(e) {
-          if (e.target.files.length > 0) {
-            uploadedFile = e.target.files[0];
-            console.log('File selected:', uploadedFile.name);
-          }
-        });
-
-        document.getElementById('doneButton').addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          if (uploadedFile) {
-            console.log('Uploading file:', uploadedFile.name);
-            // Here you would handle the file upload
-            // Redirect to hints page
-            window.location.href = `hints.html?storyId=${storyId}`;
-          } else {
-            alert('Please select a picture to upload');
-          }
-        });
       }
     </script>
   </body>
