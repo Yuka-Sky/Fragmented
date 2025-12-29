@@ -65,7 +65,7 @@
           <h1 class="upload-title">Upload the Picture!</h1>
 
           <div class="upload-info" id="storyInfo">
-            <p class="upload-info-text"><strong>Story From:</strong> <span id="storyCreator">Loading...</span></p>
+            <p class="upload-info-text"><strong>Invite from:</strong> <span id="inviteFrom">Loading...</span></p>
             <p class="upload-info-text"><strong>Object:</strong> <span id="storyObject">Loading...</span></p>
           </div>
 
@@ -123,8 +123,13 @@
 
           const data = await response.json();
           
+          // Get last contributor (the one who invited current user)
+          const lastContributor = data.contributions.length > 0 
+            ? data.contributions[data.contributions.length - 1].username
+            : data.story.creator_username;
+          
           // Update UI with story data
-          document.getElementById('storyCreator').textContent = data.story.creator_username;
+          document.getElementById('inviteFrom').textContent = lastContributor;
           document.getElementById('storyObject').textContent = data.story.object;
 
         } catch (error) {

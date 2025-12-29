@@ -57,7 +57,7 @@
 
         <div class="write-content-box">
           <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
-          <a href="opening-sentence.html" class="write-back-arrow">
+          <a href="#" class="write-back-arrow" id="backArrow">
             <svg viewBox="0 0 1024 1024" class="write-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
             </svg>
@@ -98,12 +98,24 @@
         const storyId = urlParams.get('storyId');
         const finishButton = document.getElementById('finishButton');
 
+        // Set up back arrow based on mode
+        const backArrow = document.getElementById('backArrow');
+        if (mode === 'new') {
+          backArrow.href = 'opening-sentence.html';
+        } else if (mode === 'continue') {
+          backArrow.href = 'hints.html?storyId=' + storyId;
+        } else {
+          backArrow.href = 'menu.html';
+        }
+
         // If mode is 'new' (start a story path), hide finish narrative button
         if (mode === 'new') {
           finishButton.style.display = 'none';
         } 
         // If mode is 'continue' (continue story path), check if story has 10+ sentences
         else if (mode === 'continue' && storyId) {
+          let canFinish = false;
+          
           try {
             // Load story to check contribution count
             const response = await fetch(`http://localhost:3000/api/stories/${storyId}`, {
@@ -116,12 +128,10 @@
               const data = await response.json();
               const contributionCount = data.contributions.length;
               
-              // If story will have 10+ sentences after this contribution, unlock finish button
-              if (contributionCount >= 9) {
+              // If story has 5+ sentences already (including opening), allow finishing
+              if (contributionCount >= 5) {
+                canFinish = true;
                 finishButton.style.display = 'flex';
-                finishButton.style.opacity = '1';
-                finishButton.style.cursor = 'pointer';
-                finishButton.classList.remove('disabled');
               } else {
                 finishButton.style.display = 'flex';
                 finishButton.style.opacity = '0.5';
@@ -136,6 +146,29 @@
             finishButton.style.cursor = 'not-allowed';
             finishButton.classList.add('disabled');
           }
+
+          // Update finish button state based on text input
+          const sentenceInput = document.getElementById('sentenceInput');
+          
+          function updateFinishButton() {
+            const hasText = sentenceInput.value.trim().length > 0;
+            
+            if (canFinish && hasText) {
+              finishButton.style.opacity = '1';
+              finishButton.style.cursor = 'pointer';
+              finishButton.classList.remove('disabled');
+            } else {
+              finishButton.style.opacity = '0.5';
+              finishButton.style.cursor = 'not-allowed';
+              finishButton.classList.add('disabled');
+            }
+          }
+          
+          // Initial update
+          updateFinishButton();
+          
+          // Listen for text changes
+          sentenceInput.addEventListener('input', updateFinishButton);
         }
 
         document.getElementById('sendButton').addEventListener('click', async function(e) {

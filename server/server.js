@@ -390,16 +390,18 @@ app.get('/api/users/history', authenticateToken, (req, res) => {
   const userId = req.user.userId;
 
   db.all(`
-    SELECT DISTINCT s.*, u.username as creator_username,
-           COUNT(c.id) as contribution_count
+    SELECT DISTINCT s.id, s.title, s.object, s.creator_id, s.is_complete, s.created_at,
+           u.username as creator_username,
+           (SELECT COUNT(*) FROM contributions WHERE story_id = s.id) as contribution_count
     FROM stories s
     JOIN users u ON s.creator_id = u.id
-    JOIN contributions c ON s.id = c.story_id
     WHERE s.is_complete = 1 
-      AND (s.creator_id = ? OR c.user_id = ?)
-    GROUP BY s.id
+      AND EXISTS (
+        SELECT 1 FROM contributions c 
+        WHERE c.story_id = s.id AND c.user_id = ?
+      )
     ORDER BY s.created_at DESC
-  `, [userId, userId], (err, stories) => {
+  `, [userId], (err, stories) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching history' });
     }
@@ -444,14 +446,10 @@ app.post('/api/stories/:storyId/participants', authenticateToken, (req, res) => 
 
     const nextTurnOrder = (row.max_order || 0) + 1;
 
-    // Add participant
-    db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
+    // Add participant (allow re-inviting) - use INSERT OR IGNORE to skip if already exists
+    db.run('INSERT OR IGNORE INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
       [storyId, userId, nextTurnOrder], (err) => {
       if (err) {
-        // Check if participant already exists
-        if (err.message.includes('UNIQUE')) {
-          return res.status(400).json({ message: 'User is already a participant' });
-        }
         return res.status(500).json({ message: 'Error adding participant' });
       }
 
