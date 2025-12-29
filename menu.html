@@ -76,9 +76,20 @@
             <a href="rules.html" class="menu-button menu-button-secondary">
               <span class="menu-button-text">Rules</span>
             </a>
+            <a href="#" class="menu-button menu-button-secondary" id="logoutButton">
+              <span class="menu-button-text">Logout</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+      document.getElementById('logoutButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        logout();
+      });
+    </script>
   </body>
 </html>

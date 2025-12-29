@@ -88,22 +88,51 @@
         initPage();
       }
 
-      function initPage() {
+      async function initPage() {
         // Check which mode we're in (new story or continue story)
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode');
+        const storyId = urlParams.get('storyId');
         const finishButton = document.getElementById('finishButton');
 
         // If mode is 'new' (start a story path), hide finish narrative button
         if (mode === 'new') {
           finishButton.style.display = 'none';
         } 
-        // If mode is 'continue' (continue story path), show but disable finish narrative button
-        else if (mode === 'continue') {
-          finishButton.style.display = 'flex';
-          finishButton.style.opacity = '0.5';
-          finishButton.style.cursor = 'not-allowed';
-          finishButton.classList.add('disabled');
+        // If mode is 'continue' (continue story path), check if story has 10+ sentences
+        else if (mode === 'continue' && storyId) {
+          try {
+            // Load story to check contribution count
+            const response = await fetch(`http://localhost:3000/api/stories/${storyId}`, {
+              headers: {
+                'Authorization': `Bearer ${auth.token}`
+              }
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              const contributionCount = data.contributions.length;
+              
+              // If story will have 10+ sentences after this contribution, unlock finish button
+              if (contributionCount >= 9) {
+                finishButton.style.display = 'flex';
+                finishButton.style.opacity = '1';
+                finishButton.style.cursor = 'pointer';
+                finishButton.classList.remove('disabled');
+              } else {
+                finishButton.style.display = 'flex';
+                finishButton.style.opacity = '0.5';
+                finishButton.style.cursor = 'not-allowed';
+                finishButton.classList.add('disabled');
+              }
+            }
+          } catch (error) {
+            console.error('Error checking story length:', error);
+            finishButton.style.display = 'flex';
+            finishButton.style.opacity = '0.5';
+            finishButton.style.cursor = 'not-allowed';
+            finishButton.classList.add('disabled');
+          }
         }
 
         document.getElementById('sendButton').addEventListener('click', async function(e) {

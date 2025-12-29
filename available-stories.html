@@ -73,7 +73,11 @@
     <script>
       // Check authentication
       const auth = requireAuth();
-      if (!auth) return;
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        loadStories();
+      }
 
       // Load available stories
       async function loadStories() {
@@ -108,8 +112,6 @@
           document.getElementById('storiesGrid').innerHTML = '<p style="text-align: center; color: red; grid-column: 1 / -1;">Error loading stories</p>';
         }
       }
-
-      loadStories();
     </script>
   </body>
 </html>
