@@ -1,0 +1,213 @@
+.give-title-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/GeneralBackground.png');
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+}
+
+.give-title-content-box {
+  position: relative;
+  width: 90%;
+  max-width: 920px;
+  display: flex;
+  padding: 60px 80px;
+  align-items: flex-start;
+  border-radius: 20px;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  gap: 30px;
+}
+
+.give-title-back-arrow {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.give-title-back-arrow:hover {
+  transform: translateX(-5px);
+}
+
+.give-title-icon {
+  width: 100%;
+  height: 100%;
+  fill: #4a5568;
+}
+
+.give-title-title {
+  color: rgba(43, 61, 141, 1);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.give-title-narrative {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.give-title-sentence {
+  color: rgba(43, 61, 141, 1);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.6;
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+}
+
+.give-title-author {
+  color: rgba(170, 170, 220, 1);
+  font-size: 18px;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.give-title-input-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.give-title-label {
+  color: rgba(43, 61, 141, 1);
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'Noto Sans', sans-serif;
+  white-space: nowrap;
+}
+
+.give-title-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.give-title-input {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 18px;
+  border: 2px solid rgba(43, 61, 141, 0.3);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Noto Sans', sans-serif;
+  background-color: #ffffff;
+}
+
+.give-title-input:focus {
+  border-color: rgba(43, 61, 141, 1);
+  box-shadow: 0 0 0 3px rgba(43, 61, 141, 0.1);
+}
+
+.give-title-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  min-width: 120px;
+  height: 55px;
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.give-title-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.give-title-button:active {
+  transform: translateY(0);
+}
+
+.give-title-button-text {
+  color: rgba(255, 255, 255, 1);
+  font-size: 24px;
+  font-weight: 400;
+  font-family: 'Protest Strike';
+}
+
+@media (max-width: 768px) {
+  .give-title-content-box {
+    padding: 50px 40px;
+    width: 95%;
+  }
+
+  .give-title-title {
+    font-size: 38px;
+    margin-top: 10px;
+  }
+
+  .give-title-sentence {
+    font-size: 16px;
+  }
+
+  .give-title-author {
+    font-size: 14px;
+  }
+
+  .give-title-input-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .give-title-label {
+    font-size: 20px;
+  }
+
+  .give-title-input-wrapper {
+    width: 100%;
+  }
+
+  .give-title-input {
+    font-size: 16px;
+  }
+
+  .give-title-button {
+    min-width: 100px;
+    height: 50px;
+    padding: 10px 24px;
+  }
+
+  .give-title-button-text {
+    font-size: 20px;
+  }
+
+  .give-title-back-arrow {
+    width: 32px;
+    height: 32px;
+    top: 20px;
+    left: 20px;
+  }
+}

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Opening Sentence - Fragmented Narratives</title>
-    <meta property="og:title" content="Opening Sentence - Fragmented Narratives" />
+    <title>Your Narrative - Fragmented Narratives</title>
+    <meta property="og:title" content="Your Narrative - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,26 +51,58 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/opening-sentence.css" rel="stylesheet" />
+      <link href="./css/give-title.css" rel="stylesheet" />
 
-      <div class="opening-container">
-
-        <div class="opening-content-box">
-          <a href="start-story.html" class="opening-back-arrow">
-            <svg viewBox="0 0 1024 1024" class="opening-icon">
+      <div class="give-title-container">
+        <div class="give-title-content-box">
+          <a href="write-sentence.html" class="give-title-back-arrow">
+            <svg viewBox="0 0 1024 1024" class="give-title-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
             </svg>
           </a>
 
-          <h1 class="opening-title">Opening Sentence</h1>
+          <h1 class="give-title-title">Your Narrative</h1>
 
-          <p class="opening-sentence" id="generatedSentence">"One morning, the coffee machine at work stopped working properly."</p>
+          <div class="give-title-narrative">
+            <p class="give-title-sentence">A balloon escaped someone's hand and drifted into the sky.</p>
+            <p class="give-title-sentence">People stopped what they were doing to watch it disappear between the buildings. <span class="give-title-author">by You</span></p>
+            <p class="give-title-sentence">Watching it vanish felt unexpectedly important to everyone nearby. <span class="give-title-author">by MochiBear_</span></p>
+            <p class="give-title-sentence">The importance was hard to explain and even harder to justify. <span class="give-title-author">by SoftSketches</span></p>
+            <p class="give-title-sentence">Explaining anything at that point seemed unnecessary. <span class="give-title-author">by LazyFoxxo</span></p>
+            <p class="give-title-sentence">That point marked the moment curiosity started replacing attention. <span class="give-title-author">by StaticMuse</span></p>
+            <p class="give-title-sentence">Curiosity lingered longer than the original reason for stopping ever did. <span class="give-title-author">by duckybeans</span></p>
+            <p class="give-title-sentence">The original reason quietly slipped out of focus. <span class="give-title-author">by piggyteddy_</span></p>
+            <p class="give-title-sentence">Focus shifted toward shared reactions instead. <span class="give-title-author">by NotSoProGamer</span></p>
+            <p class="give-title-sentence">Those reactions slowly became the most memorable part. <span class="give-title-author">by SleepyPanda123</span></p>
+            <p class="give-title-sentence">Later, the memory remained without its cause. <span class="give-title-author">by You</span></p>
+          </div>
 
-          <a href="write-sentence.html" class="opening-button">
-            <span class="opening-button-text">Continue Narrative</span>
-          </a>
+          <div class="give-title-input-section">
+            <label class="give-title-label">Give it a Title:</label>
+            <div class="give-title-input-wrapper">
+              <input type="text" id="titleInput" class="give-title-input" />
+              <a href="#" class="give-title-button" id="doneButton">
+                <span class="give-title-button-text">Done</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <script>
+      document.getElementById('doneButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        const titleInput = document.getElementById('titleInput').value.trim();
+        
+        if (titleInput) {
+          console.log('Story title:', titleInput);
+          // Redirect to finished page
+          window.location.href = 'finished.html';
+        } else {
+          alert('Please give your narrative a title');
+        }
+      });
+    </script>
   </body>
 </html>
