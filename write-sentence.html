@@ -56,6 +56,7 @@
       <div class="write-container">
 
         <div class="write-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <a href="opening-sentence.html" class="write-back-arrow">
             <svg viewBox="0 0 1024 1024" class="write-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
@@ -85,6 +86,8 @@
       if (!auth) {
         // Will be redirected by requireAuth
       } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
         initPage();
       }
 
@@ -182,9 +185,39 @@
               alert('Failed to create story');
             }
           } else {
-            // Continue existing story (TODO)
-            console.log('Sending sentence:', sentenceInput);
-            window.location.href = 'pick-writer.html';
+            // Continue existing story
+            const storyId = urlParams.get('storyId');
+            
+            if (!storyId) {
+              alert('No story ID found');
+              return;
+            }
+
+            try {
+              // Add contribution to existing story
+              const response = await fetch(`http://localhost:3000/api/stories/${storyId}/contributions`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${auth.token}`
+                },
+                body: JSON.stringify({
+                  sentence: sentenceInput
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to add contribution');
+              }
+
+              const data = await response.json();
+              console.log('Contribution added:', data);
+              // Redirect to pick next writer page with story ID
+              window.location.href = `pick-writer.html?storyId=${storyId}`;
+            } catch (error) {
+              console.error('Error adding contribution:', error);
+              alert('Failed to add contribution');
+            }
           }
         });
 

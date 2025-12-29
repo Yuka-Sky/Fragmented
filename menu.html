@@ -55,6 +55,7 @@
 
       <div class="menu-container">
         <div class="menu-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <h1 class="menu-title">Welcome to Fragmented Narratives!</h1>
           
           <div class="menu-main-buttons">
@@ -86,6 +87,11 @@
 
     <script src="./js/auth.js"></script>
     <script>
+      const auth = checkAuth();
+      if (auth) {
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+      }
+      
       document.getElementById('logoutButton').addEventListener('click', function(e) {
         e.preventDefault();
         logout();

@@ -54,6 +54,7 @@
       <link href="./css/available-stories.css" rel="stylesheet" />
 
       <div class="stories-container">
+        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
 
         <h1 class="stories-main-title">Available Stories</h1>
 
@@ -76,11 +77,16 @@
       if (!auth) {
         // Will be redirected by requireAuth
       } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
         loadStories();
       }
 
       // Load available stories
       async function loadStories() {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        
         try {
           const response = await fetch('http://localhost:3000/api/stories/available', {
             headers: {

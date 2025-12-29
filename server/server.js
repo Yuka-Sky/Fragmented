@@ -329,6 +329,40 @@ app.get('/api/stories/:id', authenticateToken, (req, res) => {
   });
 });
 
+// Add contribution to existing story
+app.post('/api/stories/:id/contributions', authenticateToken, (req, res) => {
+  const storyId = req.params.id;
+  const { sentence } = req.body;
+  const userId = req.user.userId;
+
+  if (!sentence) {
+    return res.status(400).json({ message: 'Sentence is required' });
+  }
+
+  // First, get the current max order_num for this story
+  db.get('SELECT MAX(order_num) as max_order FROM contributions WHERE story_id = ?', [storyId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching contribution order' });
+    }
+
+    const nextOrder = (row.max_order || 0) + 1;
+
+    // Add new contribution
+    db.run('INSERT INTO contributions (story_id, user_id, sentence_text, order_num) VALUES (?, ?, ?, ?)',
+      [storyId, userId, sentence, nextOrder], function(err) {
+      if (err) {
+        return res.status(500).json({ message: 'Error adding contribution' });
+      }
+
+      res.status(201).json({
+        message: 'Contribution added successfully',
+        contributionId: this.lastID,
+        order: nextOrder
+      });
+    });
+  });
+});
+
 app.get('/api/users/history', authenticateToken, (req, res) => {
   const userId = req.user.userId;
 

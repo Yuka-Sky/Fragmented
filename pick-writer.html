@@ -55,6 +55,7 @@
 
       <div class="pick-container">
         <div class="pick-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <h1 class="pick-title">Pick the Next Writer</h1>
 
           <input type="text" id="searchInput" class="pick-search" placeholder="Search a name..." />
@@ -77,10 +78,15 @@
       if (!auth) {
         // Will be redirected by requireAuth
       } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
         initPage();
       }
 
       function initPage() {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        
         let selectedWriter = null;
         let allWriters = [];
 
