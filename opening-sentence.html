@@ -66,7 +66,7 @@
 
           <p class="opening-sentence" id="generatedSentence">Loading...</p>
 
-          <a href="write-sentence.html?mode=new" class="opening-button">
+          <a href="#" class="opening-button" id="continueButton">
             <span class="opening-button-text">Continue Narrative</span>
           </a>
         </div>
@@ -75,11 +75,28 @@
 
     <script src="./js/auth.js"></script>
     <script>
+      let currentObject = '';
+      let currentOpeningSentence = '';
+
       // Check authentication
       const auth = requireAuth();
       if (!auth) {
         // Will be redirected by requireAuth
       } else {
+        init();
+      }
+
+      function init() {
+        // Get object from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        currentObject = urlParams.get('object');
+        
+        if (!currentObject) {
+          alert('No object specified');
+          window.location.href = 'start-story.html';
+          return;
+        }
+
         loadOpeningSentence();
       }
 
@@ -96,12 +113,24 @@
           }
 
           const data = await response.json();
-          document.getElementById('generatedSentence').textContent = `"${data.sentence}"`;
+          currentOpeningSentence = data.sentence;
+          document.getElementById('generatedSentence').textContent = `"${currentOpeningSentence}"`;
         } catch (error) {
           console.error('Error loading opening sentence:', error);
           document.getElementById('generatedSentence').textContent = 'Error loading opening sentence';
         }
       }
+
+      document.getElementById('continueButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Pass object and opening sentence to write-sentence page
+        const params = new URLSearchParams({
+          mode: 'new',
+          object: currentObject,
+          openingSentence: currentOpeningSentence
+        });
+        window.location.href = 'write-sentence.html?' + params.toString();
+      });
     </script>
   </body>
 </html>

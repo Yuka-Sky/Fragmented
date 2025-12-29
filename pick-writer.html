@@ -146,14 +146,42 @@
       });
 
       // Choose button handler
-      document.getElementById('chooseButton').addEventListener('click', function(e) {
+      document.getElementById('chooseButton').addEventListener('click', async function(e) {
         e.preventDefault();
-        if (selectedWriter) {
-          console.log('Selected writer:', selectedWriter);
-          // TODO: Save selected writer to story
-          window.location.href = 'contribution-sent.html';
-        } else {
+        if (!selectedWriter) {
           alert('Please select a writer first');
+          return;
+        }
+
+        // Get story ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('storyId');
+
+        if (!storyId) {
+          alert('No story ID found');
+          return;
+        }
+
+        try {
+          // Add selected writer as participant
+          const response = await fetch(`http://localhost:3000/api/stories/${storyId}/participants`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${auth.token}`
+            },
+            body: JSON.stringify({ userId: selectedWriter.id })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to add participant');
+          }
+
+          console.log('Selected writer:', selectedWriter);
+          window.location.href = 'contribution-sent.html';
+        } catch (error) {
+          console.error('Error adding participant:', error);
+          alert('Failed to add participant to story');
         }
       });
 

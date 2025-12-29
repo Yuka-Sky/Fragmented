@@ -78,55 +78,106 @@
       </div>
     </div>
 
+    <script src="./js/auth.js"></script>
     <script>
-      // Check which mode we're in (new story or continue story)
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode');
-      const finishButton = document.getElementById('finishButton');
-
-      // If mode is 'new' (start a story path), hide finish narrative button
-      if (mode === 'new') {
-        finishButton.style.display = 'none';
-      } 
-      // If mode is 'continue' (continue story path), show but disable finish narrative button
-      else if (mode === 'continue') {
-        finishButton.style.display = 'flex';
-        finishButton.style.opacity = '0.5';
-        finishButton.style.cursor = 'not-allowed';
-        finishButton.classList.add('disabled');
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        initPage();
       }
 
-      document.getElementById('sendButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        const sentenceInput = document.getElementById('sentenceInput').value.trim();
-        
-        if (sentenceInput) {
-          console.log('Sending sentence:', sentenceInput);
-          // Redirect to pick next writer page
-          window.location.href = 'pick-writer.html';
-        } else {
-          alert('Please write a sentence before sending');
-        }
-      });
+      function initPage() {
+        // Check which mode we're in (new story or continue story)
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const finishButton = document.getElementById('finishButton');
 
-      document.getElementById('finishButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Don't allow clicking if disabled
-        if (this.classList.contains('disabled')) {
-          return;
+        // If mode is 'new' (start a story path), hide finish narrative button
+        if (mode === 'new') {
+          finishButton.style.display = 'none';
+        } 
+        // If mode is 'continue' (continue story path), show but disable finish narrative button
+        else if (mode === 'continue') {
+          finishButton.style.display = 'flex';
+          finishButton.style.opacity = '0.5';
+          finishButton.style.cursor = 'not-allowed';
+          finishButton.classList.add('disabled');
         }
-        
-        const sentenceInput = document.getElementById('sentenceInput').value.trim();
-        
-        if (sentenceInput) {
-          console.log('Finishing narrative with sentence:', sentenceInput);
-          // Redirect to the give title page
-          window.location.href = 'give-title.html';
-        } else {
-          alert('Please write a sentence before finishing the narrative');
-        }
-      });
+
+        document.getElementById('sendButton').addEventListener('click', async function(e) {
+          e.preventDefault();
+          const sentenceInput = document.getElementById('sentenceInput').value.trim();
+          
+          if (!sentenceInput) {
+            alert('Please write a sentence before sending');
+            return;
+          }
+
+          const mode = urlParams.get('mode');
+
+          if (mode === 'new') {
+            // Create new story
+            const object = urlParams.get('object');
+            const openingSentence = urlParams.get('openingSentence');
+
+            if (!object || !openingSentence) {
+              alert('Missing story data');
+              return;
+            }
+
+            try {
+              const response = await fetch('http://localhost:3000/api/stories', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${auth.token}`
+                },
+                body: JSON.stringify({
+                  object: object,
+                  openingSentence: openingSentence,
+                  sentence: sentenceInput
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to create story');
+              }
+
+              const data = await response.json();
+              // Redirect to pick next writer page with story ID
+              window.location.href = `pick-writer.html?storyId=${data.storyId}`;
+            } catch (error) {
+              console.error('Error creating story:', error);
+              alert('Failed to create story');
+            }
+          } else {
+            // Continue existing story (TODO)
+            console.log('Sending sentence:', sentenceInput);
+            window.location.href = 'pick-writer.html';
+          }
+        });
+
+        document.getElementById('finishButton').addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Don't allow clicking if disabled
+          if (this.classList.contains('disabled')) {
+            return;
+          }
+          
+          const sentenceInput = document.getElementById('sentenceInput').value.trim();
+          
+          if (sentenceInput) {
+            console.log('Finishing narrative with sentence:', sentenceInput);
+            // Redirect to the give title page
+            window.location.href = 'give-title.html';
+          } else {
+            alert('Please write a sentence before finishing the narrative');
+          }
+        });
+      }
     </script>
   </body>
 </html>

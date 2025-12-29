@@ -228,8 +228,12 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Story Routes
 app.post('/api/stories', authenticateToken, (req, res) => {
-  const { object, sentence } = req.body;
+  const { object, openingSentence, sentence } = req.body;
   const userId = req.user.userId;
+
+  if (!object || !openingSentence || !sentence) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
 
   // Create story
   db.run('INSERT INTO stories (object, creator_id) VALUES (?, ?)', [object, userId], function(err) {
@@ -239,23 +243,31 @@ app.post('/api/stories', authenticateToken, (req, res) => {
     
     const storyId = this.lastID;
 
-    // Add first contribution
+    // Add opening sentence as first contribution (order 0)
     db.run('INSERT INTO contributions (story_id, user_id, sentence_text, order_num) VALUES (?, ?, ?, ?)', 
-      [storyId, userId, sentence, 1], (err) => {
+      [storyId, userId, openingSentence, 0], (err) => {
       if (err) {
-        return res.status(500).json({ message: 'Error adding contribution' });
+        return res.status(500).json({ message: 'Error adding opening sentence' });
       }
 
-      // Add creator as participant
-      db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
-        [storyId, userId, 1], (err) => {
+      // Add user's sentence as second contribution (order 1)
+      db.run('INSERT INTO contributions (story_id, user_id, sentence_text, order_num) VALUES (?, ?, ?, ?)', 
+        [storyId, userId, sentence, 1], (err) => {
         if (err) {
-          return res.status(500).json({ message: 'Error adding participant' });
+          return res.status(500).json({ message: 'Error adding contribution' });
         }
 
-        res.status(201).json({
-          message: 'Story created successfully',
-          storyId
+        // Add creator as participant
+        db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
+          [storyId, userId, 1], (err) => {
+          if (err) {
+            return res.status(500).json({ message: 'Error adding participant' });
+          }
+
+          res.status(201).json({
+            message: 'Story created successfully',
+            storyId
+          });
         });
       });
     });
@@ -356,6 +368,38 @@ app.get('/api/opening-sentence/random', authenticateToken, (req, res) => {
       return res.status(404).json({ message: 'No opening sentences available' });
     }
     res.json({ sentence: sentence.sentence_text });
+  });
+});
+
+app.post('/api/stories/:storyId/participants', authenticateToken, (req, res) => {
+  const storyId = req.params.storyId;
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID required' });
+  }
+
+  // Get the current max turn_order for this story
+  db.get('SELECT MAX(turn_order) as max_order FROM story_participants WHERE story_id = ?', [storyId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const nextTurnOrder = (row.max_order || 0) + 1;
+
+    // Add participant
+    db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
+      [storyId, userId, nextTurnOrder], (err) => {
+      if (err) {
+        // Check if participant already exists
+        if (err.message.includes('UNIQUE')) {
+          return res.status(400).json({ message: 'User is already a participant' });
+        }
+        return res.status(500).json({ message: 'Error adding participant' });
+      }
+
+      res.json({ message: 'Participant added successfully' });
+    });
   });
 });
 
