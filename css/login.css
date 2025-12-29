@@ -1,4 +1,146 @@
-.login-container1 {
+.login-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/GeneralBackground.png');
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+}
+
+.login-content-box {
+  width: 90%;
+  max-width: 550px;
+  display: flex;
+  padding: 60px 80px;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  gap: 30px;
+}
+
+.login-title {
+  color: rgba(43, 61, 141, 1);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 18px;
+  border: 2px solid rgba(43, 61, 141, 0.3);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Noto Sans', sans-serif;
+  background-color: #ffffff;
+}
+
+.login-input:focus {
+  border-color: rgba(43, 61, 141, 1);
+  box-shadow: 0 0 0 3px rgba(43, 61, 141, 0.1);
+}
+
+.login-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 32px;
+  height: 65px;
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+.login-button-text {
+  color: rgba(255, 255, 255, 1);
+  font-size: 26px;
+  font-weight: 400;
+  font-family: 'Protest Strike';
+}
+
+.login-register-link {
+  color: rgba(43, 61, 141, 1);
+  font-size: 18px;
+  font-weight: 400;
+  font-family: 'Noto Sans', sans-serif;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-link {
+  color: rgba(80, 74, 242, 1);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.login-link:hover {
+  color: rgba(21, 17, 133, 1);
+}
+
+@media (max-width: 768px) {
+  .login-content-box {
+    padding: 50px 40px;
+    width: 95%;
+    gap: 25px;
+  }
+
+  .login-title {
+    font-size: 38px;
+  }
+
+  .login-input {
+    font-size: 16px;
+    padding: 14px 18px;
+  }
+
+  .login-button {
+    padding: 14px 28px;
+    height: 60px;
+  }
+
+  .login-button-text {
+    font-size: 22px;
+  }
+
+  .login-register-link {
+    font-size: 16px;
+  }
+}
   width: 100%;
   display: flex;
   overflow: auto;

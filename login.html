@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Join - Fragmented Narratives</title>
-    <meta property="og:title" content="Join - Fragmented Narratives" />
+    <title>Login - Fragmented Narratives</title>
+    <meta property="og:title" content="Login - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -53,31 +53,79 @@
     <div>
       <link href="./css/login.css" rel="stylesheet" />
 
-      <div class="login-container1">
+      <div class="login-container">
         <div class="login-content-box">
-          <a href="index.html" class="login-back-button">
-            <svg viewBox="0 0 1024 1024" class="login-back-icon">
-              <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
-            </svg>
-          </a>
+          <h1 class="login-title">Welcome Back!</h1>
           
-          <h1 class="login-title">Join the Story</h1>
-          
-          <div class="login-form-content">
-            <p class="login-description">
-              Enter your nickname to start creating fragmented narratives with others.
-            </p>
+          <form class="login-form" id="loginForm">
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              class="login-input" 
+              placeholder="Username"
+              required
+            />
             
-            <form class="login-form" id="loginForm">
-              <input 
-                type="text" 
-                id="nickname" 
-                name="nickname" 
-                class="login-input" 
-                placeholder="Your Nickname"
-                required
-                maxlength="20"
-              />
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="login-input" 
+              placeholder="Password"
+              required
+            />
+            
+            <button type="submit" class="login-button">
+              <span class="login-button-text">Login</span>
+            </button>
+          </form>
+
+          <p class="login-register-link">
+            New here? <a href="register.html" class="login-link">Create an account</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Store user data
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('token', data.token);
+            
+            // Redirect to menu
+            window.location.href = 'menu.html';
+          } else {
+            alert(data.message || 'Login failed');
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          alert('An error occurred during login');
+        }
+      });
+    </script>
+  </body>
+</html>
               
               <button type="submit" class="login-button">
                 <span class="login-button-text">Start Playing</span>
