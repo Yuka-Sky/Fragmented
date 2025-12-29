@@ -1,0 +1,104 @@
+.contribution-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/GeneralBackground.png');
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+}
+
+.contribution-content-box {
+  width: 90%;
+  max-width: 920px;
+  display: flex;
+  padding: 60px 80px;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  gap: 40px;
+}
+
+.contribution-title {
+  color: rgba(43, 61, 141, 1);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.contribution-subtitle {
+  color: rgba(43, 61, 141, 1);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+  max-width: 700px;
+}
+
+.contribution-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 32px;
+  min-width: 220px;
+  height: 70px;
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.contribution-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.contribution-button:active {
+  transform: translateY(0);
+}
+
+.contribution-button-text {
+  color: rgba(255, 255, 255, 1);
+  font-size: 28px;
+  font-weight: 400;
+  font-family: 'Protest Strike';
+}
+
+@media (max-width: 768px) {
+  .contribution-content-box {
+    padding: 50px 40px;
+    width: 95%;
+    gap: 30px;
+  }
+
+  .contribution-title {
+    font-size: 38px;
+  }
+
+  .contribution-subtitle {
+    font-size: 20px;
+  }
+
+  .contribution-button {
+    padding: 14px 28px;
+    min-width: 200px;
+    height: 65px;
+  }
+
+  .contribution-button-text {
+    font-size: 24px;
+  }
+}

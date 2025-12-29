@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Menu - Fragmented Narratives</title>
-    <meta property="og:title" content="Menu - Fragmented Narratives" />
+    <title>Write Your Sentence - Fragmented Narratives</title>
+    <meta property="og:title" content="Write Your Sentence - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,34 +51,82 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/menu.css" rel="stylesheet" />
+      <link href="./css/write-sentence.css" rel="stylesheet" />
 
-      <div class="menu-container">
-        <div class="menu-content-box">
-          <h1 class="menu-title">Welcome to Fragmented Narratives!</h1>
-          
-          <div class="menu-main-buttons">
-            <a href="start-story.html" class="menu-button menu-button-primary">
-              <span class="menu-button-text">Start a Story</span>
-            </a>
-            <a href="available-stories.html" class="menu-button menu-button-primary">
-              <span class="menu-button-text">Continue a Story</span>
-            </a>
-            <a href="history.html" class="menu-button menu-button-primary">
-              <span class="menu-button-text">Visit History</span>
-            </a>
-          </div>
+      <div class="write-container">
 
-          <div class="menu-secondary-buttons">
-            <a href="about.html" class="menu-button menu-button-secondary">
-              <span class="menu-button-text">About</span>
+        <div class="write-content-box">
+          <a href="opening-sentence.html" class="write-back-arrow">
+            <svg viewBox="0 0 1024 1024" class="write-icon">
+              <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
+            </svg>
+          </a>
+
+          <h1 class="write-title">Write Your Sentence</h1>
+
+          <textarea id="sentenceInput" class="write-textarea" placeholder=""></textarea>
+
+          <div class="write-buttons">
+            <a href="#" class="write-button" id="sendButton">
+              <span class="write-button-text">Send</span>
             </a>
-            <a href="rules.html" class="menu-button menu-button-secondary">
-              <span class="menu-button-text">Rules</span>
+            <a href="#" class="write-button" id="finishButton">
+              <span class="write-button-text">Finish Narrative</span>
             </a>
           </div>
         </div>
       </div>
     </div>
+
+    <script>
+      // Check which mode we're in (new story or continue story)
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      const finishButton = document.getElementById('finishButton');
+
+      // If mode is 'new' (start a story path), hide finish narrative button
+      if (mode === 'new') {
+        finishButton.style.display = 'none';
+      } 
+      // If mode is 'continue' (continue story path), show but disable finish narrative button
+      else if (mode === 'continue') {
+        finishButton.style.display = 'flex';
+        finishButton.style.opacity = '0.5';
+        finishButton.style.cursor = 'not-allowed';
+        finishButton.classList.add('disabled');
+      }
+
+      document.getElementById('sendButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        const sentenceInput = document.getElementById('sentenceInput').value.trim();
+        
+        if (sentenceInput) {
+          console.log('Sending sentence:', sentenceInput);
+          // Redirect to pick next writer page
+          window.location.href = 'pick-writer.html';
+        } else {
+          alert('Please write a sentence before sending');
+        }
+      });
+
+      document.getElementById('finishButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Don't allow clicking if disabled
+        if (this.classList.contains('disabled')) {
+          return;
+        }
+        
+        const sentenceInput = document.getElementById('sentenceInput').value.trim();
+        
+        if (sentenceInput) {
+          console.log('Finishing narrative with sentence:', sentenceInput);
+          // Redirect to the give title page
+          window.location.href = 'give-title.html';
+        } else {
+          alert('Please write a sentence before finishing the narrative');
+        }
+      });
+    </script>
   </body>
 </html>

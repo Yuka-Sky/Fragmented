@@ -1,0 +1,155 @@
+.opening-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(241, 232, 255, 1);
+  background-image: url('../public/GeneralBackground.png');
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+}
+
+.opening-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  background: linear-gradient(90deg, rgba(80, 74, 242, 0.3) 0%, rgba(189, 187, 243, 0.3) 50%, rgba(80, 74, 242, 0.3) 100%);
+}
+
+.opening-logo {
+  width: 200px;
+  height: auto;
+}
+
+.opening-content-box {
+  position: relative;
+  width: 90%;
+  max-width: 920px;
+  display: flex;
+  padding: 60px 80px;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  gap: 40px;
+}
+
+.opening-back-arrow {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.opening-back-arrow:hover {
+  transform: translateX(-5px);
+}
+
+.opening-icon {
+  width: 100%;
+  height: 100%;
+  fill: #4a5568;
+}
+
+.opening-title {
+  color: rgba(43, 61, 141, 1);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.opening-sentence {
+  color: rgba(43, 61, 141, 1);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  font-family: 'Noto Sans', sans-serif;
+  padding: 0 20px;
+  max-width: 700px;
+}
+
+.opening-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 32px;
+  min-width: 220px;
+  height: 70px;
+  background: linear-gradient(180deg, rgba(80, 74, 242, 1) 0%, rgba(21, 17, 133, 1) 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.opening-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.opening-button:active {
+  transform: translateY(0);
+}
+
+.opening-button-text {
+  color: rgba(255, 255, 255, 1);
+  font-size: 28px;
+  font-weight: 400;
+  font-family: 'Protest Strike';
+}
+
+@media (max-width: 768px) {
+  .opening-content-box {
+    padding: 50px 40px;
+    width: 95%;
+    gap: 30px;
+  }
+
+  .opening-title {
+    font-size: 38px;
+  }
+
+  .opening-sentence {
+    font-size: 22px;
+    padding: 0 10px;
+  }
+
+  .opening-button {
+    padding: 14px 28px;
+    min-width: 200px;
+    height: 65px;
+  }
+
+  .opening-button-text {
+    font-size: 24px;
+  }
+
+  .opening-back-arrow {
+    width: 32px;
+    height: 32px;
+    top: 20px;
+    left: 20px;
+  }
+
+  .opening-logo {
+    width: 160px;
+  }
+}

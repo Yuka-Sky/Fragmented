@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Menu - Fragmented Narratives</title>
-    <meta property="og:title" content="Menu - Fragmented Narratives" />
+    <title>Upload the Picture - Fragmented Narratives</title>
+    <meta property="og:title" content="Upload the Picture - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,34 +51,62 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/menu.css" rel="stylesheet" />
+      <link href="./css/upload-picture.css" rel="stylesheet" />
 
-      <div class="menu-container">
-        <div class="menu-content-box">
-          <h1 class="menu-title">Welcome to Fragmented Narratives!</h1>
-          
-          <div class="menu-main-buttons">
-            <a href="start-story.html" class="menu-button menu-button-primary">
-              <span class="menu-button-text">Start a Story</span>
-            </a>
-            <a href="available-stories.html" class="menu-button menu-button-primary">
-              <span class="menu-button-text">Continue a Story</span>
-            </a>
-            <a href="history.html" class="menu-button menu-button-primary">
-              <span class="menu-button-text">Visit History</span>
-            </a>
+      <div class="upload-container">
+        <div class="upload-content-box">
+          <a href="available-stories.html" class="upload-back-arrow">
+            <svg viewBox="0 0 1024 1024" class="upload-icon">
+              <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
+            </svg>
+          </a>
+
+          <h1 class="upload-title">Upload the Picture!</h1>
+
+          <div class="upload-info">
+            <p class="upload-info-text"><strong>Story From:</strong> butterfingers</p>
+            <p class="upload-info-text"><strong>Object:</strong> Red pencil</p>
           </div>
 
-          <div class="menu-secondary-buttons">
-            <a href="about.html" class="menu-button menu-button-secondary">
-              <span class="menu-button-text">About</span>
-            </a>
-            <a href="rules.html" class="menu-button menu-button-secondary">
-              <span class="menu-button-text">Rules</span>
-            </a>
-          </div>
+          <label for="fileInput" class="upload-button-label">
+            <input type="file" id="fileInput" class="upload-file-input" accept=".png,.jpg,.jpeg" />
+            <div class="upload-icon-box">
+              <svg viewBox="0 0 1024 1024" class="upload-arrow-icon">
+                <path d="M298 426v256h428v-256h170l-384-384-384 384h170zM896 810v86h-768v-86h768z"></path>
+              </svg>
+            </div>
+          </label>
+
+          <a href="#" class="upload-done-button" id="doneButton">
+            <span class="upload-button-text">Done</span>
+          </a>
         </div>
       </div>
     </div>
+
+    <script>
+      const fileInput = document.getElementById('fileInput');
+      let uploadedFile = null;
+
+      fileInput.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+          uploadedFile = e.target.files[0];
+          console.log('File selected:', uploadedFile.name);
+        }
+      });
+
+      document.getElementById('doneButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (uploadedFile) {
+          console.log('Uploading file:', uploadedFile.name);
+          // Here you would handle the file upload
+          // Redirect to hints page
+          window.location.href = 'hints.html';
+        } else {
+          alert('Please select a picture to upload');
+        }
+      });
+    </script>
   </body>
 </html>
