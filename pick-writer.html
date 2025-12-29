@@ -59,23 +59,8 @@
 
           <input type="text" id="searchInput" class="pick-search" placeholder="Search a name..." />
 
-          <div class="pick-list-box">
-            <div class="pick-writer-item" data-writer="MochiBear_">MochiBear_</div>
-            <div class="pick-writer-item" data-writer="SoftSketches">SoftSketches</div>
-            <div class="pick-writer-item" data-writer="DefinitelyHuman">DefinitelyHuman</div>
-            <div class="pick-writer-item" data-writer="froggysocks">froggysocks</div>
-            <div class="pick-writer-item" data-writer="WiFiGremlin">WiFiGremlin</div>
-            <div class="pick-writer-item" data-writer="moonmilk7">moonmilk7</div>
-            <div class="pick-writer-item" data-writer="SleepyPanda123">SleepyPanda123</div>
-            <div class="pick-writer-item" data-writer="BobbyTheWriter">BobbyTheWriter</div>
-            <div class="pick-writer-item" data-writer="StaticMuse">StaticMuse</div>
-            <div class="pick-writer-item" data-writer="LazyFoxxo">LazyFoxxo</div>
-            <div class="pick-writer-item" data-writer="duckybeans">duckybeans</div>
-            <div class="pick-writer-item" data-writer="piggyteddy_">piggyteddy_</div>
-            <div class="pick-writer-item" data-writer="NotSoProGamer">NotSoProGamer</div>
-            <div class="pick-writer-item" data-writer="raccooncrumbs">raccooncrumbs</div>
-            <div class="pick-writer-item" data-writer="butterfingers">butterfingers</div>
-            <div class="pick-writer-item" data-writer="OopsIDidItAgain">OopsIDidItAgain</div>
+          <div class="pick-list-box" id="writersList">
+            <!-- Writers will be loaded here dynamically -->
           </div>
 
           <a href="#" class="pick-button" id="chooseButton">
@@ -85,32 +70,79 @@
       </div>
     </div>
 
+    <script src="./js/auth.js"></script>
     <script>
-      const writerItems = document.querySelectorAll('.pick-writer-item');
-      let selectedWriter = null;
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        initPage();
+      }
 
-      // Handle writer selection
-      writerItems.forEach(item => {
-        item.addEventListener('click', function() {
-          // Remove selected class from all items
-          writerItems.forEach(w => w.classList.remove('selected'));
-          // Add selected class to clicked item
-          this.classList.add('selected');
-          selectedWriter = this.getAttribute('data-writer');
+      function initPage() {
+        let selectedWriter = null;
+        let allWriters = [];
+
+        // Load users from database
+        async function loadUsers() {
+        try {
+          const response = await fetch('http://localhost:3000/api/users', {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load users');
+          }
+
+          const data = await response.json();
+          allWriters = data.users;
+          displayWriters(allWriters);
+        } catch (error) {
+          console.error('Error loading users:', error);
+          document.getElementById('writersList').innerHTML = '<p style="text-align: center; color: red;">Error loading users</p>';
+        }
+      }
+
+      // Display writers
+      function displayWriters(writers) {
+        const writersList = document.getElementById('writersList');
+        writersList.innerHTML = '';
+
+        if (writers.length === 0) {
+          writersList.innerHTML = '<p style="text-align: center; color: rgba(43, 61, 141, 1);">No users found</p>';
+          return;
+        }
+
+        writers.forEach(user => {
+          const writerItem = document.createElement('div');
+          writerItem.className = 'pick-writer-item';
+          writerItem.setAttribute('data-writer-id', user.id);
+          writerItem.setAttribute('data-writer', user.username);
+          writerItem.textContent = user.username;
+
+          writerItem.addEventListener('click', function() {
+            document.querySelectorAll('.pick-writer-item').forEach(w => w.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedWriter = {
+              id: this.getAttribute('data-writer-id'),
+              username: this.getAttribute('data-writer')
+            };
+          });
+
+          writersList.appendChild(writerItem);
         });
-      });
+      }
 
       // Search functionality
       document.getElementById('searchInput').addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase();
-        writerItems.forEach(item => {
-          const writerName = item.getAttribute('data-writer').toLowerCase();
-          if (writerName.includes(searchTerm)) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
-        });
+        const filteredWriters = allWriters.filter(user => 
+          user.username.toLowerCase().includes(searchTerm)
+        );
+        displayWriters(filteredWriters);
       });
 
       // Choose button handler
@@ -118,12 +150,16 @@
         e.preventDefault();
         if (selectedWriter) {
           console.log('Selected writer:', selectedWriter);
-          // Redirect to contribution sent page
+          // TODO: Save selected writer to story
           window.location.href = 'contribution-sent.html';
         } else {
           alert('Please select a writer first');
         }
       });
+
+      // Load users on page load
+      loadUsers();
+    }
     </script>
   </body>
 </html>

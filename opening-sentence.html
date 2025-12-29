@@ -64,7 +64,7 @@
 
           <h1 class="opening-title">Opening Sentence</h1>
 
-          <p class="opening-sentence" id="generatedSentence">"One morning, the coffee machine at work stopped working properly."</p>
+          <p class="opening-sentence" id="generatedSentence">Loading...</p>
 
           <a href="write-sentence.html?mode=new" class="opening-button">
             <span class="opening-button-text">Continue Narrative</span>
@@ -72,5 +72,36 @@
         </div>
       </div>
     </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        loadOpeningSentence();
+      }
+
+      async function loadOpeningSentence() {
+        try {
+          const response = await fetch('http://localhost:3000/api/opening-sentence/random', {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load opening sentence');
+          }
+
+          const data = await response.json();
+          document.getElementById('generatedSentence').textContent = `"${data.sentence}"`;
+        } catch (error) {
+          console.error('Error loading opening sentence:', error);
+          document.getElementById('generatedSentence').textContent = 'Error loading opening sentence';
+        }
+      }
+    </script>
   </body>
 </html>

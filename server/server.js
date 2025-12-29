@@ -79,6 +79,43 @@ db.serialize(() => {
       UNIQUE(story_id, user_id)
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS opening_sentences (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sentence_text TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Insert opening sentences if table is empty
+  db.get('SELECT COUNT(*) as count FROM opening_sentences', [], (err, row) => {
+    if (!err && row.count === 0) {
+      const openingSentences = [
+        "During the meeting, someone changed the agenda without telling anyone.",
+        "A mug appeared on the desk that nobody remembered bringing.",
+        "Someone clapped once in the library and then froze.",
+        "A sticky note was found on the door with no signature.",
+        "A message was sent to the group chat and immediately deleted.",
+        "Everyone realized at the same time that they had misunderstood the plan.",
+        "A name was called out that didn't belong to anyone present.",
+        "The apology came too late to fix anything.",
+        "An announcement played twice, each time slightly different.",
+        "The instructions contradicted themselves halfway through.",
+        "The lights flickered once and then behaved normally again.",
+        "A sound repeated itself every few minutes.",
+        "The note said the same thing it always did, but it felt wrong this time.",
+        "The room felt smaller after the door closed.",
+        "A warning was issued without any details.",
+        "The clock was correct, but nobody trusted it."
+      ];
+
+      const stmt = db.prepare('INSERT INTO opening_sentences (sentence_text) VALUES (?)');
+      openingSentences.forEach(sentence => stmt.run(sentence));
+      stmt.finalize();
+      console.log('Opening sentences initialized');
+    }
+  });
 });
 
 // Middleware
@@ -298,6 +335,27 @@ app.get('/api/users/history', authenticateToken, (req, res) => {
       return res.status(500).json({ message: 'Error fetching history' });
     }
     res.json({ stories });
+  });
+});
+
+app.get('/api/users', authenticateToken, (req, res) => {
+  db.all('SELECT id, username FROM users ORDER BY username', [], (err, users) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching users' });
+    }
+    res.json({ users });
+  });
+});
+
+app.get('/api/opening-sentence/random', authenticateToken, (req, res) => {
+  db.get('SELECT * FROM opening_sentences ORDER BY RANDOM() LIMIT 1', [], (err, sentence) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching opening sentence' });
+    }
+    if (!sentence) {
+      return res.status(404).json({ message: 'No opening sentences available' });
+    }
+    res.json({ sentence: sentence.sentence_text });
   });
 });
 
