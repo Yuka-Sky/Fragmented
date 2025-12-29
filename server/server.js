@@ -79,6 +79,43 @@ db.serialize(() => {
       UNIQUE(story_id, user_id)
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS opening_sentences (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sentence_text TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Insert opening sentences if table is empty
+  db.get('SELECT COUNT(*) as count FROM opening_sentences', [], (err, row) => {
+    if (!err && row.count === 0) {
+      const openingSentences = [
+        "During the meeting, someone changed the agenda without telling anyone.",
+        "A mug appeared on the desk that nobody remembered bringing.",
+        "Someone clapped once in the library and then froze.",
+        "A sticky note was found on the door with no signature.",
+        "A message was sent to the group chat and immediately deleted.",
+        "Everyone realized at the same time that they had misunderstood the plan.",
+        "A name was called out that didn't belong to anyone present.",
+        "The apology came too late to fix anything.",
+        "An announcement played twice, each time slightly different.",
+        "The instructions contradicted themselves halfway through.",
+        "The lights flickered once and then behaved normally again.",
+        "A sound repeated itself every few minutes.",
+        "The note said the same thing it always did, but it felt wrong this time.",
+        "The room felt smaller after the door closed.",
+        "A warning was issued without any details.",
+        "The clock was correct, but nobody trusted it."
+      ];
+
+      const stmt = db.prepare('INSERT INTO opening_sentences (sentence_text) VALUES (?)');
+      openingSentences.forEach(sentence => stmt.run(sentence));
+      stmt.finalize();
+      console.log('Opening sentences initialized');
+    }
+  });
 });
 
 // Middleware
@@ -191,8 +228,12 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Story Routes
 app.post('/api/stories', authenticateToken, (req, res) => {
-  const { object, sentence } = req.body;
+  const { object, openingSentence, sentence } = req.body;
   const userId = req.user.userId;
+
+  if (!object || !openingSentence || !sentence) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
 
   // Create story
   db.run('INSERT INTO stories (object, creator_id) VALUES (?, ?)', [object, userId], function(err) {
@@ -202,23 +243,31 @@ app.post('/api/stories', authenticateToken, (req, res) => {
     
     const storyId = this.lastID;
 
-    // Add first contribution
+    // Add opening sentence as first contribution (order 0)
     db.run('INSERT INTO contributions (story_id, user_id, sentence_text, order_num) VALUES (?, ?, ?, ?)', 
-      [storyId, userId, sentence, 1], (err) => {
+      [storyId, userId, openingSentence, 0], (err) => {
       if (err) {
-        return res.status(500).json({ message: 'Error adding contribution' });
+        return res.status(500).json({ message: 'Error adding opening sentence' });
       }
 
-      // Add creator as participant
-      db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
-        [storyId, userId, 1], (err) => {
+      // Add user's sentence as second contribution (order 1)
+      db.run('INSERT INTO contributions (story_id, user_id, sentence_text, order_num) VALUES (?, ?, ?, ?)', 
+        [storyId, userId, sentence, 1], (err) => {
         if (err) {
-          return res.status(500).json({ message: 'Error adding participant' });
+          return res.status(500).json({ message: 'Error adding contribution' });
         }
 
-        res.status(201).json({
-          message: 'Story created successfully',
-          storyId
+        // Add creator as participant
+        db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
+          [storyId, userId, 1], (err) => {
+          if (err) {
+            return res.status(500).json({ message: 'Error adding participant' });
+          }
+
+          res.status(201).json({
+            message: 'Story created successfully',
+            storyId
+          });
         });
       });
     });
@@ -280,6 +329,40 @@ app.get('/api/stories/:id', authenticateToken, (req, res) => {
   });
 });
 
+// Add contribution to existing story
+app.post('/api/stories/:id/contributions', authenticateToken, (req, res) => {
+  const storyId = req.params.id;
+  const { sentence } = req.body;
+  const userId = req.user.userId;
+
+  if (!sentence) {
+    return res.status(400).json({ message: 'Sentence is required' });
+  }
+
+  // First, get the current max order_num for this story
+  db.get('SELECT MAX(order_num) as max_order FROM contributions WHERE story_id = ?', [storyId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching contribution order' });
+    }
+
+    const nextOrder = (row.max_order || 0) + 1;
+
+    // Add new contribution
+    db.run('INSERT INTO contributions (story_id, user_id, sentence_text, order_num) VALUES (?, ?, ?, ?)',
+      [storyId, userId, sentence, nextOrder], function(err) {
+      if (err) {
+        return res.status(500).json({ message: 'Error adding contribution' });
+      }
+
+      res.status(201).json({
+        message: 'Contribution added successfully',
+        contributionId: this.lastID,
+        order: nextOrder
+      });
+    });
+  });
+});
+
 app.get('/api/users/history', authenticateToken, (req, res) => {
   const userId = req.user.userId;
 
@@ -298,6 +381,59 @@ app.get('/api/users/history', authenticateToken, (req, res) => {
       return res.status(500).json({ message: 'Error fetching history' });
     }
     res.json({ stories });
+  });
+});
+
+app.get('/api/users', authenticateToken, (req, res) => {
+  db.all('SELECT id, username FROM users ORDER BY username', [], (err, users) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching users' });
+    }
+    res.json({ users });
+  });
+});
+
+app.get('/api/opening-sentence/random', authenticateToken, (req, res) => {
+  db.get('SELECT * FROM opening_sentences ORDER BY RANDOM() LIMIT 1', [], (err, sentence) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching opening sentence' });
+    }
+    if (!sentence) {
+      return res.status(404).json({ message: 'No opening sentences available' });
+    }
+    res.json({ sentence: sentence.sentence_text });
+  });
+});
+
+app.post('/api/stories/:storyId/participants', authenticateToken, (req, res) => {
+  const storyId = req.params.storyId;
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID required' });
+  }
+
+  // Get the current max turn_order for this story
+  db.get('SELECT MAX(turn_order) as max_order FROM story_participants WHERE story_id = ?', [storyId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const nextTurnOrder = (row.max_order || 0) + 1;
+
+    // Add participant
+    db.run('INSERT INTO story_participants (story_id, user_id, turn_order) VALUES (?, ?, ?)', 
+      [storyId, userId, nextTurnOrder], (err) => {
+      if (err) {
+        // Check if participant already exists
+        if (err.message.includes('UNIQUE')) {
+          return res.status(400).json({ message: 'User is already a participant' });
+        }
+        return res.status(500).json({ message: 'Error adding participant' });
+      }
+
+      res.json({ message: 'Participant added successfully' });
+    });
   });
 });
 

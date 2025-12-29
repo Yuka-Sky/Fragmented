@@ -54,20 +54,12 @@
       <link href="./css/history.css" rel="stylesheet" />
 
       <div class="history-container">
+        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
         <h1 class="history-main-title">Old Narratives</h1>
 
         <div class="history-content-box">
           <div class="history-grid" id="historyGrid">
             <!-- Story cards will be added here dynamically -->
-            <a href="story1.html" class="history-card">
-              <h3 class="history-card-title">Faster Than Facts</h3>
-            </a>
-            <a href="story2.html" class="history-card">
-              <h3 class="history-card-title">Nothing Changed</h3>
-            </a>
-            <a href="story3.html" class="history-card">
-              <h3 class="history-card-title">A Slightly Different Time</h3>
-            </a>
           </div>
         </div>
 
@@ -76,5 +68,54 @@
         </a>
       </div>
     </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        loadHistory();
+      }
+
+      // Load completed stories
+      async function loadHistory() {
+        try {
+          const response = await fetch('http://localhost:3000/api/users/history', {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load history');
+          }
+
+          const data = await response.json();
+          const historyGrid = document.getElementById('historyGrid');
+
+          if (data.stories.length === 0) {
+            historyGrid.innerHTML = '<p style="text-align: center; color: rgba(43, 61, 141, 1); font-size: 18px; grid-column: 1 / -1;">No completed stories yet.</p>';
+            return;
+          }
+
+          data.stories.forEach(story => {
+            const card = document.createElement('a');
+            card.href = `story-view.html?storyId=${story.id}`;
+            card.className = 'history-card';
+            card.innerHTML = `<h3 class="history-card-title">${story.title || 'Untitled Story'}</h3>`;
+            historyGrid.appendChild(card);
+          });
+        } catch (error) {
+          console.error('Error loading history:', error);
+          document.getElementById('historyGrid').innerHTML = '<p style="text-align: center; color: red; grid-column: 1 / -1;">Error loading history</p>';
+        }
+      }
+
+      loadHistory();
+    </script>
   </body>
 </html>

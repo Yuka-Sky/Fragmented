@@ -56,6 +56,7 @@
       <div class="opening-container">
 
         <div class="opening-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <a href="start-story.html" class="opening-back-arrow">
             <svg viewBox="0 0 1024 1024" class="opening-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
@@ -64,13 +65,73 @@
 
           <h1 class="opening-title">Opening Sentence</h1>
 
-          <p class="opening-sentence" id="generatedSentence">"One morning, the coffee machine at work stopped working properly."</p>
+          <p class="opening-sentence" id="generatedSentence">Loading...</p>
 
-          <a href="write-sentence.html?mode=new" class="opening-button">
+          <a href="#" class="opening-button" id="continueButton">
             <span class="opening-button-text">Continue Narrative</span>
           </a>
         </div>
       </div>
     </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+      let currentObject = '';
+      let currentOpeningSentence = '';
+
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;        init();
+      }
+
+      function init() {
+        // Get object from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        currentObject = urlParams.get('object');
+        
+        if (!currentObject) {
+          alert('No object specified');
+          window.location.href = 'start-story.html';
+          return;
+        }
+
+        loadOpeningSentence();
+      }
+
+      async function loadOpeningSentence() {
+        try {
+          const response = await fetch('http://localhost:3000/api/opening-sentence/random', {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load opening sentence');
+          }
+
+          const data = await response.json();
+          currentOpeningSentence = data.sentence;
+          document.getElementById('generatedSentence').textContent = `"${currentOpeningSentence}"`;
+        } catch (error) {
+          console.error('Error loading opening sentence:', error);
+          document.getElementById('generatedSentence').textContent = 'Error loading opening sentence';
+        }
+      }
+
+      document.getElementById('continueButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Pass object and opening sentence to write-sentence page
+        const params = new URLSearchParams({
+          mode: 'new',
+          object: currentObject,
+          openingSentence: currentOpeningSentence
+        });
+        window.location.href = 'write-sentence.html?' + params.toString();
+      });
+    </script>
   </body>
 </html>

@@ -55,6 +55,7 @@
 
       <div class="hints-container">
         <div class="hints-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <a href="upload-picture.html" class="hints-back-arrow">
             <svg viewBox="0 0 1024 1024" class="hints-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
@@ -67,20 +68,105 @@
             "arm" "hurt" "reason"
           </div>
 
-          <a href="write-sentence.html?mode=continue" class="hints-button">
+          <a href="#" class="hints-button" id="continueButton">
             <span class="hints-button-text">Continue Narrative</span>
           </a>
         </div>
       </div>
     </div>
 
+    <script src="./js/auth.js"></script>
     <script>
-      // Get hints from URL parameters or use default
-      const urlParams = new URLSearchParams(window.location.search);
-      const hints = urlParams.get('hints');
-      
-      if (hints) {
-        document.getElementById('hintsContent').textContent = hints;
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        initPage();
+      }
+
+      async function initPage() {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('storyId');
+
+        if (!storyId) {
+          alert('No story selected');
+          window.location.href = 'available-stories.html';
+          return;
+        }
+
+        try {
+          // Load story contributions
+          const response = await fetch(`http://localhost:3000/api/stories/${storyId}`, {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load story');
+          }
+
+          const data = await response.json();
+          
+          // Get last contribution
+          const contributions = data.contributions;
+          if (contributions.length > 0) {
+            const lastSentence = contributions[contributions.length - 1].sentence_text;
+            
+            // Generate hints: extract 2-5 random words from last sentence
+            const hints = generateHints(lastSentence);
+            
+            // Display hints
+            const hintsHtml = hints.map(word => `"${word}"`).join(' ');
+            document.getElementById('hintsContent').textContent = hintsHtml;
+          }
+
+        } catch (error) {
+          console.error('Error loading story:', error);
+          alert('Error loading hints');
+        }
+
+        // Set up continue button
+        document.getElementById('continueButton').addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = `write-sentence.html?mode=continue&storyId=${storyId}`;
+        });
+      }
+
+      function generateHints(sentence) {
+        // Split sentence into words and clean them
+        const words = sentence
+          .replace(/[.,!?;:]/g, '') // Remove punctuation
+          .split(/\s+/) // Split by whitespace
+          .filter(word => word.length > 2); // Only words with more than 2 characters
+
+        if (words.length === 0) {
+          return [];
+        }
+
+        // Determine how many hints to show (2-5, but not more than available words)
+        const numHints = Math.min(Math.floor(Math.random() * 4) + 2, words.length);
+        
+        // Select random indices while maintaining order
+        const indices = [];
+        const wordsCopy = [...words];
+        
+        for (let i = 0; i < numHints; i++) {
+          const randomIndex = Math.floor(Math.random() * wordsCopy.length);
+          indices.push(words.indexOf(wordsCopy[randomIndex]));
+          wordsCopy.splice(randomIndex, 1);
+        }
+        
+        // Sort indices to maintain word order
+        indices.sort((a, b) => a - b);
+        
+        // Get words at selected indices
+        return indices.map(i => words[i]);
       }
     </script>
   </body>

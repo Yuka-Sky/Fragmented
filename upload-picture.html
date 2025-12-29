@@ -55,6 +55,7 @@
 
       <div class="upload-container">
         <div class="upload-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <a href="available-stories.html" class="upload-back-arrow">
             <svg viewBox="0 0 1024 1024" class="upload-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
@@ -63,9 +64,9 @@
 
           <h1 class="upload-title">Upload the Picture!</h1>
 
-          <div class="upload-info">
-            <p class="upload-info-text"><strong>Story From:</strong> butterfingers</p>
-            <p class="upload-info-text"><strong>Object:</strong> Red pencil</p>
+          <div class="upload-info" id="storyInfo">
+            <p class="upload-info-text"><strong>Story From:</strong> <span id="storyCreator">Loading...</span></p>
+            <p class="upload-info-text"><strong>Object:</strong> <span id="storyObject">Loading...</span></p>
           </div>
 
           <label for="fileInput" class="upload-button-label">
@@ -84,29 +85,76 @@
       </div>
     </div>
 
+    <script src="./js/auth.js"></script>
     <script>
-      const fileInput = document.getElementById('fileInput');
-      let uploadedFile = null;
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        initPage();
+      }
 
-      fileInput.addEventListener('change', function(e) {
-        if (e.target.files.length > 0) {
-          uploadedFile = e.target.files[0];
-          console.log('File selected:', uploadedFile.name);
-        }
-      });
-
-      document.getElementById('doneButton').addEventListener('click', function(e) {
-        e.preventDefault();
+      async function initPage() {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
         
-        if (uploadedFile) {
-          console.log('Uploading file:', uploadedFile.name);
-          // Here you would handle the file upload
-          // Redirect to hints page
-          window.location.href = 'hints.html';
-        } else {
-          alert('Please select a picture to upload');
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('storyId');
+
+        if (!storyId) {
+          alert('No story selected');
+          window.location.href = 'available-stories.html';
+          return;
         }
-      });
+
+        // Load story data
+        try {
+          const response = await fetch(`http://localhost:3000/api/stories/${storyId}`, {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load story');
+          }
+
+          const data = await response.json();
+          
+          // Update UI with story data
+          document.getElementById('storyCreator').textContent = data.story.creator_username;
+          document.getElementById('storyObject').textContent = data.story.object;
+
+        } catch (error) {
+          console.error('Error loading story:', error);
+          alert('Error loading story data');
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        let uploadedFile = null;
+
+        fileInput.addEventListener('change', function(e) {
+          if (e.target.files.length > 0) {
+            uploadedFile = e.target.files[0];
+            console.log('File selected:', uploadedFile.name);
+          }
+        });
+
+        document.getElementById('doneButton').addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          if (uploadedFile) {
+            console.log('Uploading file:', uploadedFile.name);
+            // Here you would handle the file upload
+            // Redirect to hints page
+            window.location.href = `hints.html?storyId=${storyId}`;
+          } else {
+            alert('Please select a picture to upload');
+          }
+        });
+      }
     </script>
   </body>
 </html>

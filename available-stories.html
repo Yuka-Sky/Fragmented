@@ -54,21 +54,13 @@
       <link href="./css/available-stories.css" rel="stylesheet" />
 
       <div class="stories-container">
+        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
 
         <h1 class="stories-main-title">Available Stories</h1>
 
         <div class="stories-content-box">
           <div class="stories-grid" id="storiesGrid">
             <!-- Story cards will be added here dynamically -->
-            <a href="upload-picture.html" class="story-card">
-              <span class="story-card-question">?</span>
-            </a>
-            <a href="upload-picture.html" class="story-card">
-              <span class="story-card-question">?</span>
-            </a>
-            <a href="upload-picture.html" class="story-card">
-              <span class="story-card-question">?</span>
-            </a>
           </div>
         </div>
 
@@ -77,5 +69,55 @@
         </a>
       </div>
     </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        loadStories();
+      }
+
+      // Load available stories
+      async function loadStories() {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        
+        try {
+          const response = await fetch('http://localhost:3000/api/stories/available', {
+            headers: {
+              'Authorization': `Bearer ${auth.token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load stories');
+          }
+
+          const data = await response.json();
+          const storiesGrid = document.getElementById('storiesGrid');
+
+          if (data.stories.length === 0) {
+            storiesGrid.innerHTML = '<p style="text-align: center; color: rgba(43, 61, 141, 1); font-size: 18px; grid-column: 1 / -1;">No available stories yet. Start a new story!</p>';
+            return;
+          }
+
+          data.stories.forEach(story => {
+            const card = document.createElement('a');
+            card.href = `upload-picture.html?storyId=${story.id}`;
+            card.className = 'story-card';
+            card.innerHTML = `<span class="story-card-question">?</span>`;
+            storiesGrid.appendChild(card);
+          });
+        } catch (error) {
+          console.error('Error loading stories:', error);
+          document.getElementById('storiesGrid').innerHTML = '<p style="text-align: center; color: red; grid-column: 1 / -1;">Error loading stories</p>';
+        }
+      }
+    </script>
   </body>
 </html>

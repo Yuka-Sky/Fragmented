@@ -56,6 +56,7 @@
       <div class="write-container">
 
         <div class="write-content-box">
+          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
           <a href="opening-sentence.html" class="write-back-arrow">
             <svg viewBox="0 0 1024 1024" class="write-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
@@ -78,55 +79,167 @@
       </div>
     </div>
 
+    <script src="./js/auth.js"></script>
     <script>
-      // Check which mode we're in (new story or continue story)
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode');
-      const finishButton = document.getElementById('finishButton');
-
-      // If mode is 'new' (start a story path), hide finish narrative button
-      if (mode === 'new') {
-        finishButton.style.display = 'none';
-      } 
-      // If mode is 'continue' (continue story path), show but disable finish narrative button
-      else if (mode === 'continue') {
-        finishButton.style.display = 'flex';
-        finishButton.style.opacity = '0.5';
-        finishButton.style.cursor = 'not-allowed';
-        finishButton.classList.add('disabled');
+      // Check authentication
+      const auth = requireAuth();
+      if (!auth) {
+        // Will be redirected by requireAuth
+      } else {
+        // Display current username
+        document.getElementById('currentUser').textContent = `@${auth.username}`;
+        initPage();
       }
 
-      document.getElementById('sendButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        const sentenceInput = document.getElementById('sentenceInput').value.trim();
-        
-        if (sentenceInput) {
-          console.log('Sending sentence:', sentenceInput);
-          // Redirect to pick next writer page
-          window.location.href = 'pick-writer.html';
-        } else {
-          alert('Please write a sentence before sending');
-        }
-      });
+      async function initPage() {
+        // Check which mode we're in (new story or continue story)
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const storyId = urlParams.get('storyId');
+        const finishButton = document.getElementById('finishButton');
 
-      document.getElementById('finishButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Don't allow clicking if disabled
-        if (this.classList.contains('disabled')) {
-          return;
+        // If mode is 'new' (start a story path), hide finish narrative button
+        if (mode === 'new') {
+          finishButton.style.display = 'none';
+        } 
+        // If mode is 'continue' (continue story path), check if story has 10+ sentences
+        else if (mode === 'continue' && storyId) {
+          try {
+            // Load story to check contribution count
+            const response = await fetch(`http://localhost:3000/api/stories/${storyId}`, {
+              headers: {
+                'Authorization': `Bearer ${auth.token}`
+              }
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              const contributionCount = data.contributions.length;
+              
+              // If story will have 10+ sentences after this contribution, unlock finish button
+              if (contributionCount >= 9) {
+                finishButton.style.display = 'flex';
+                finishButton.style.opacity = '1';
+                finishButton.style.cursor = 'pointer';
+                finishButton.classList.remove('disabled');
+              } else {
+                finishButton.style.display = 'flex';
+                finishButton.style.opacity = '0.5';
+                finishButton.style.cursor = 'not-allowed';
+                finishButton.classList.add('disabled');
+              }
+            }
+          } catch (error) {
+            console.error('Error checking story length:', error);
+            finishButton.style.display = 'flex';
+            finishButton.style.opacity = '0.5';
+            finishButton.style.cursor = 'not-allowed';
+            finishButton.classList.add('disabled');
+          }
         }
-        
-        const sentenceInput = document.getElementById('sentenceInput').value.trim();
-        
-        if (sentenceInput) {
-          console.log('Finishing narrative with sentence:', sentenceInput);
-          // Redirect to the give title page
-          window.location.href = 'give-title.html';
-        } else {
-          alert('Please write a sentence before finishing the narrative');
-        }
-      });
+
+        document.getElementById('sendButton').addEventListener('click', async function(e) {
+          e.preventDefault();
+          const sentenceInput = document.getElementById('sentenceInput').value.trim();
+          
+          if (!sentenceInput) {
+            alert('Please write a sentence before sending');
+            return;
+          }
+
+          const mode = urlParams.get('mode');
+
+          if (mode === 'new') {
+            // Create new story
+            const object = urlParams.get('object');
+            const openingSentence = urlParams.get('openingSentence');
+
+            if (!object || !openingSentence) {
+              alert('Missing story data');
+              return;
+            }
+
+            try {
+              const response = await fetch('http://localhost:3000/api/stories', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${auth.token}`
+                },
+                body: JSON.stringify({
+                  object: object,
+                  openingSentence: openingSentence,
+                  sentence: sentenceInput
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to create story');
+              }
+
+              const data = await response.json();
+              // Redirect to pick next writer page with story ID
+              window.location.href = `pick-writer.html?storyId=${data.storyId}`;
+            } catch (error) {
+              console.error('Error creating story:', error);
+              alert('Failed to create story');
+            }
+          } else {
+            // Continue existing story
+            const storyId = urlParams.get('storyId');
+            
+            if (!storyId) {
+              alert('No story ID found');
+              return;
+            }
+
+            try {
+              // Add contribution to existing story
+              const response = await fetch(`http://localhost:3000/api/stories/${storyId}/contributions`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${auth.token}`
+                },
+                body: JSON.stringify({
+                  sentence: sentenceInput
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to add contribution');
+              }
+
+              const data = await response.json();
+              console.log('Contribution added:', data);
+              // Redirect to pick next writer page with story ID
+              window.location.href = `pick-writer.html?storyId=${storyId}`;
+            } catch (error) {
+              console.error('Error adding contribution:', error);
+              alert('Failed to add contribution');
+            }
+          }
+        });
+
+        document.getElementById('finishButton').addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Don't allow clicking if disabled
+          if (this.classList.contains('disabled')) {
+            return;
+          }
+          
+          const sentenceInput = document.getElementById('sentenceInput').value.trim();
+          
+          if (sentenceInput) {
+            console.log('Finishing narrative with sentence:', sentenceInput);
+            // Redirect to the give title page
+            window.location.href = 'give-title.html';
+          } else {
+            alert('Please write a sentence before finishing the narrative');
+          }
+        });
+      }
     </script>
   </body>
 </html>
