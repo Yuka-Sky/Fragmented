@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="english">
   <head>
-    <title>Your Narrative - Fragmented Narratives</title>
-    <meta property="og:title" content="Your Narrative - Fragmented Narratives" />
+    <title>Story - Fragmented Narratives</title>
+    <meta property="og:title" content="Story - Fragmented Narratives" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -51,31 +51,21 @@
   <body>
     <link rel="stylesheet" href="./style.css" />
     <div>
-      <link href="./css/give-title.css" rel="stylesheet" />
+      <link href="./css/story-view.css" rel="stylesheet" />
 
-      <div class="give-title-container">
-        <div class="give-title-content-box">
+      <div class="story-view-container">
+        <div class="story-view-content-box">
           <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 18px; color: rgba(43, 61, 141, 0.7); font-weight: 600;" id="currentUser"></div>
-          <a href="write-sentence.html" class="give-title-back-arrow">
-            <svg viewBox="0 0 1024 1024" class="give-title-icon">
+          <a href="history.html" class="story-view-back-button">
+            <svg viewBox="0 0 1024 1024" class="story-view-back-icon">
               <path d="M854 470v84h-520l238 240-60 60-342-342 342-342 60 60-238 240h520z"></path>
             </svg>
           </a>
 
-          <h1 class="give-title-title">Your Narrative</h1>
+          <h1 class="story-view-title" id="storyTitle">Loading...</h1>
 
-          <div class="give-title-narrative" id="narrativeContent">
+          <div class="story-view-text" id="storyContent" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
             <p style="text-align: center; color: rgba(43, 61, 141, 0.7);">Loading story...</p>
-          </div>
-
-          <div class="give-title-input-section">
-            <label class="give-title-label">Give it a Title:</label>
-            <div class="give-title-input-wrapper">
-              <input type="text" id="titleInput" class="give-title-input" />
-              <a href="#" class="give-title-button" id="doneButton">
-                <span class="give-title-button-text">Done</span>
-              </a>
-            </div>
           </div>
         </div>
       </div>
@@ -97,8 +87,8 @@
         const storyId = urlParams.get('storyId');
 
         if (!storyId) {
-          alert('No story ID found');
-          window.location.href = 'menu.html';
+          alert('No story selected');
+          window.location.href = 'history.html';
           return;
         }
 
@@ -115,63 +105,35 @@
           }
 
           const data = await response.json();
-          const narrativeContent = document.getElementById('narrativeContent');
-          narrativeContent.innerHTML = '';
+          
+          // Set title
+          document.getElementById('storyTitle').textContent = data.story.title || 'Untitled Story';
+          
+          // Display all contributions with authors
+          const storyContent = document.getElementById('storyContent');
+          storyContent.innerHTML = '';
 
-          // Display all contributions in order with author names
           data.contributions.forEach((contribution, index) => {
             const p = document.createElement('p');
-            p.className = 'give-title-sentence';
-            p.textContent = contribution.sentence_text;
+            p.className = 'story-sentence';
+            p.textContent = contribution.sentence_text + ' ';
             
             // Add author name for all except the opening sentence
             if (index > 0) {
               const authorSpan = document.createElement('span');
-              authorSpan.className = 'give-title-author';
-              authorSpan.textContent = ` by ${contribution.username}`;
+              authorSpan.className = 'story-author';
+              authorSpan.textContent = `by ${contribution.username}`;
               p.appendChild(authorSpan);
             }
             
-            narrativeContent.appendChild(p);
+            storyContent.appendChild(p);
           });
 
         } catch (error) {
           console.error('Error loading story:', error);
-          document.getElementById('narrativeContent').innerHTML = '<p style="text-align: center; color: red;">Error loading story</p>';
+          document.getElementById('storyTitle').textContent = 'Error';
+          document.getElementById('storyContent').innerHTML = '<p style="text-align: center; color: red;">Error loading story</p>';
         }
-
-        // Done button handler
-        document.getElementById('doneButton').addEventListener('click', async function(e) {
-          e.preventDefault();
-          const titleInput = document.getElementById('titleInput').value.trim();
-          
-          if (!titleInput) {
-            alert('Please give your narrative a title');
-            return;
-          }
-
-          try {
-            // Complete the story with title
-            const response = await fetch(`http://localhost:3000/api/stories/${storyId}/complete`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${auth.token}`
-              },
-              body: JSON.stringify({ title: titleInput })
-            });
-
-            if (!response.ok) {
-              throw new Error('Failed to complete story');
-            }
-
-            // Redirect to finished page
-            window.location.href = 'finished.html';
-          } catch (error) {
-            console.error('Error completing story:', error);
-            alert('Failed to save story title');
-          }
-        });
       }
     </script>
   </body>

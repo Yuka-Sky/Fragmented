@@ -221,7 +221,7 @@
           }
         });
 
-        document.getElementById('finishButton').addEventListener('click', function(e) {
+        document.getElementById('finishButton').addEventListener('click', async function(e) {
           e.preventDefault();
           
           // Don't allow clicking if disabled
@@ -231,12 +231,40 @@
           
           const sentenceInput = document.getElementById('sentenceInput').value.trim();
           
-          if (sentenceInput) {
-            console.log('Finishing narrative with sentence:', sentenceInput);
-            // Redirect to the give title page
-            window.location.href = 'give-title.html';
-          } else {
+          if (!sentenceInput) {
             alert('Please write a sentence before finishing the narrative');
+            return;
+          }
+
+          const storyId = urlParams.get('storyId');
+          
+          if (!storyId) {
+            alert('No story ID found');
+            return;
+          }
+
+          try {
+            // Add final contribution
+            const response = await fetch(`http://localhost:3000/api/stories/${storyId}/contributions`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${auth.token}`
+              },
+              body: JSON.stringify({
+                sentence: sentenceInput
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to add final contribution');
+            }
+
+            // Redirect to the give title page with story ID
+            window.location.href = `give-title.html?storyId=${storyId}`;
+          } catch (error) {
+            console.error('Error adding final contribution:', error);
+            alert('Failed to add final contribution');
           }
         });
       }

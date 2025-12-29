@@ -363,6 +363,29 @@ app.post('/api/stories/:id/contributions', authenticateToken, (req, res) => {
   });
 });
 
+// Complete a story with title
+app.put('/api/stories/:id/complete', authenticateToken, (req, res) => {
+  const storyId = req.params.id;
+  const { title } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ message: 'Title is required' });
+  }
+
+  // Update story with title and mark as complete
+  db.run('UPDATE stories SET title = ?, is_complete = 1 WHERE id = ?', [title, storyId], function(err) {
+    if (err) {
+      return res.status(500).json({ message: 'Error completing story' });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+
+    res.json({ message: 'Story completed successfully' });
+  });
+});
+
 app.get('/api/users/history', authenticateToken, (req, res) => {
   const userId = req.user.userId;
 
